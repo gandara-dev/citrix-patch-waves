@@ -57,8 +57,14 @@ Unknown properties are ignored.
 | `reboot.timeoutMinutes` | no | `30` | 5 to 240 minutes to register after the restart |
 | `verify.services` | no | `["BrokerAgent"]` | Windows service names; `[]` checks none |
 
-Windows Update must be enabled or at least one application listed; otherwise
-there is nothing to patch.
+With Windows Update off and no application listed, the change is a rolling
+restart: each machine is drained, restarted, and verified, with the same waves,
+gate, and window. This is the only kind of change the Citrix provider runs on a
+real site in this version:
+
+```json
+"patch": { "windowsUpdates": { "enabled": false }, "software": [] }
+```
 
 ## Choosing the numbers
 

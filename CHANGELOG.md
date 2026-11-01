@@ -6,6 +6,30 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-01
+
+### Added
+
+- The Citrix provider runs restart-only changes on a real site with
+  `-Execute`: maintenance mode, user messages, session counts, and forced
+  logoff through the Broker SDK; restarts through
+  `New-BrokerHostingPowerAction`, or `shutdown.exe` over WinRM for Remote PC
+  Access; registration counted only after the machine was seen going down;
+  service checks over WinRM, with an optional `-Credential`.
+- Restart-only changes: Windows Update off with no application is now valid,
+  and machines go from drained straight to the restart. Sample
+  `samples/lisbon-weekly-restart.maintenance.json`.
+- `Invoke-PatchWaves.ps1 -AdminAddress ... -Execute` and `-Credential`.
+- WinRM integration tests on a Windows runner, and tests of every Citrix
+  action against a mocked Broker SDK.
+
+### Changed
+
+- A provider error on one machine fails that machine, with the error in the
+  record, instead of ending the run; the machine keeps its maintenance mode.
+- `Invoke-CpwMaintenance` refuses, before touching a machine, a change that
+  asks for updates on a provider that cannot install them.
+
 ## [0.1.0] - 2026-11-01
 
 ### Added

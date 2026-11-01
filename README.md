@@ -13,9 +13,10 @@ failures than its budget stops the change, and nothing starts after the
 maintenance window closes. Every run ends with a change record for the CAB and
 the next shift.
 
-> Version 0.1.0 plans against a real site but only runs a change against the
-> built-in simulation. The Citrix provider is read-only; see
-> [docs/roadmap.md](docs/roadmap.md) for what real execution still needs.
+> Version 0.2.0 runs restart-only changes on a real site (drain, restart,
+> registration, service checks) and patching only in the built-in simulation.
+> A real change that asks for updates is refused before a machine is touched;
+> see [docs/roadmap.md](docs/roadmap.md).
 
 **[Open the demo console](https://gandara-dev.github.io/citrix-patch-waves/)**
 · or run the module in your browser:
@@ -81,10 +82,10 @@ gives the same run. Five scenarios ship with it:
 Open `./artifacts/change-record.html` for the record, or load
 `./artifacts/run.json` in the console with **Open run.json** to replay it.
 
-## Plan against a real site
+## Use it on a real site
 
 On a Delivery Controller, or a management machine with the Citrix Remote
-PowerShell SDK:
+PowerShell SDK, review the plan first:
 
 ```powershell
 ./scripts/Invoke-PatchWaves.ps1 -MaintenancePath ./maintenance.json -AdminAddress ddc01.corp.example.test -PlanOnly
@@ -92,9 +93,23 @@ PowerShell SDK:
 
 This only calls `Get-BrokerMachine`; a Citrix Read Only Administrator is
 enough. It writes `plan.json` and prints the waves and the machines left out.
-Any attempt to change a real site throws. The maintenance file format is in
-[docs/maintenance-file.md](docs/maintenance-file.md), with a JSON Schema in
-`schemas/maintenance.schema.json`.
+
+Then, inside the window, run a restart-only change (Windows Update off, no
+applications, as in
+[`samples/lisbon-weekly-restart.maintenance.json`](samples/lisbon-weekly-restart.maintenance.json)):
+
+```powershell
+./scripts/Invoke-PatchWaves.ps1 -MaintenancePath ./samples/lisbon-weekly-restart.maintenance.json -AdminAddress ddc01.corp.example.test -Execute
+```
+
+Maintenance mode, messages, logoff, and registration go through the Broker
+SDK. Machines on a hosting connection restart with
+`New-BrokerHostingPowerAction`; Remote PC Access machines restart over WinRM,
+which is also used for the service checks. The permissions are listed in
+[docs/release-verification.md](docs/release-verification.md); run the
+acceptance steps there on a test delivery group first. The maintenance file
+format is in [docs/maintenance-file.md](docs/maintenance-file.md), with a JSON
+Schema in `schemas/maintenance.schema.json`.
 
 ## Test
 
@@ -104,8 +119,9 @@ Invoke-Pester -Path ./tests -CI -Output Detailed
 node --test tests/web/*.test.mjs
 ```
 
-CI runs Pester on Windows and Linux, PSScriptAnalyzer, the console tests, a
-JSON Schema check of the sample, and every scenario end to end. See
+CI runs Pester on Windows and Linux, the service checks over real WinRM on a
+Windows runner, PSScriptAnalyzer, the console tests, a JSON Schema check of
+the samples, and every scenario end to end. See
 [docs/testing.md](docs/testing.md).
 
 ## Documentation
@@ -120,9 +136,11 @@ JSON Schema check of the sample, and every scenario end to end. See
 
 ## Current scope
 
-Version `0.1.0` targets VDAs on on-premises Citrix Virtual Apps and Desktops.
-It plans against a real site and runs changes only in the simulation, which
-models single-session desktops. It does not patch Delivery Controllers or
+Version `0.2.0` targets VDAs on on-premises Citrix Virtual Apps and Desktops.
+It plans against a real site and runs restart-only changes there; patching
+runs only in the simulation, which models single-session desktops. The Citrix
+actions are tested against a mocked Broker SDK, not yet against a live
+site. It does not patch Delivery Controllers or
 StoreFront, does not read Citrix Cloud (DaaS), and does not schedule itself;
 run it from the job scheduler you already trust. These are explicit limits,
 not implicit promises.

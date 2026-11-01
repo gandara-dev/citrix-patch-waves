@@ -14,11 +14,15 @@ names, or credentials.
 
 ## Security boundaries
 
-- In this version the Citrix provider only calls `Get-BrokerMachine`. Every
-  action that would change a site throws, and `Invoke-CpwMaintenance` refuses a
-  real provider without `-Execute`.
+- `Invoke-CpwMaintenance` refuses a real provider without `-Execute`, and
+  refuses a real change that asks for updates before touching a machine: the
+  Citrix provider does not install anything in this version.
+- A real change puts machines in maintenance mode, messages and (with
+  `forceLogoff`) logs off users, and restarts machines. WinRM commands run with
+  the current account or the `-Credential` given; nothing is stored.
 - The tool runs with the rights of the account that starts it; use a Citrix
-  Read Only Administrator for planning.
+  Read Only Administrator for planning and the narrower role in
+  `docs/release-verification.md` for a change.
 - Plans, run files, journals, and change records contain machine, catalog, and
   delivery group names, session counts, and the user message. Store them with
   the change, as internal data.

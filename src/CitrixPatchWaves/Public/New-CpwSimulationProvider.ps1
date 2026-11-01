@@ -116,6 +116,7 @@ function New-CpwSimulationProvider {
     [pscustomobject]@{
         Name = 'Simulation'
         IsSimulation = $true
+        CanPatch = $true
         State = $state
 
         Now = { param($State) $State.Now }

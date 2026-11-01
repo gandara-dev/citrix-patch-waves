@@ -1,6 +1,6 @@
 @{
     RootModule = 'CitrixPatchWaves.psm1'
-    ModuleVersion = '0.1.0'
+    ModuleVersion = '0.2.0'
     GUID = '1449ba59-ac64-432e-b77a-73e629d83c9f'
     Author = 'Mateus Gandara'
     Description = 'Patches Citrix VDAs in place in waves: drain, patch, restart, verify registration, and stop when a wave exceeds its failure budget. Ships with a deterministic simulation and writes a change record.'

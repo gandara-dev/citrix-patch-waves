@@ -1,7 +1,7 @@
 {
   "kind": "citrix-patch-waves-run",
   "schemaVersion": 1,
-  "toolVersion": "0.1.0",
+  "toolVersion": "0.2.0",
   "provider": "Simulation",
   "simulation": true,
   "maintenance": {

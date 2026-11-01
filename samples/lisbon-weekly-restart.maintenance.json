@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "name": "Weekly restart: Lisbon Remote PC desktops",
+  "change": "CHG-2026-1108",
+  "window": {
+    "start": "2026-11-08T22:00:00Z",
+    "end": "2026-11-09T02:00:00Z"
+  },
+  "target": {
+    "deliveryGroups": ["DG-LIS-W11-RPC-ENGINEERING"],
+    "include": [],
+    "exclude": []
+  },
+  "waves": {
+    "canarySize": 1,
+    "waveSize": 4,
+    "concurrency": 4,
+    "failureBudget": 1,
+    "pollMinutes": 1
+  },
+  "drain": {
+    "timeoutMinutes": 30,
+    "forceLogoff": false,
+    "message": {
+      "enabled": true,
+      "title": "Weekly restart",
+      "text": "This desktop restarts tonight for maintenance. Save your work and log off; you can reconnect after 02:00 UTC."
+    }
+  },
+  "patch": {
+    "windowsUpdates": {
+      "enabled": false
+    },
+    "software": []
+  },
+  "reboot": {
+    "timeoutMinutes": 20
+  },
+  "verify": {
+    "services": ["BrokerAgent"]
+  }
+}
