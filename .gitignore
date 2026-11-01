@@ -1,0 +1,10 @@
+# Plans, runs, and change records from real sites never belong in the repository.
+artifacts/
+plan.json
+run.json
+journal.jsonl
+change-record.*
+!site/data/*.json
+TestResults/
+testResults.xml
+*.user

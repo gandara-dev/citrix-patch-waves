@@ -1,0 +1,184 @@
+/* A management console for a change: a playback bar for the change window,
+   a navigation tree, a list of waves or machines, and a details pane. */
+:root {
+  color-scheme: light;
+  --app: #eef1f4;
+  --surface: #ffffff;
+  --line: #d5dbe1;
+  --line-soft: #e8ecf0;
+  --head: #f5f7f9;
+  --ink: #1d2733;
+  --soft: #5a6878;
+  --faint: #8d99a6;
+  --nav: #1f2d3b;
+  --nav-ink: #d6dee7;
+  --nav-soft: #8b9aab;
+  --nav-hover: #2a3a4b;
+  --nav-active: #33485e;
+  --accent: #0a6ebd;
+  --accent-soft: #e5f1fb;
+  --select: #d8eaf9;
+  --ok: #1d7a43;
+  --high: #b3261e;
+  --high-soft: #fbe9e7;
+  --medium: #9a5b00;
+  --medium-soft: #fdf2e0;
+  --low: #3d5f8f;
+  --low-soft: #e8eff8;
+  --info: #5a6878;
+  --info-soft: #eef1f4;
+  --sans: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  --mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --app: #12171d;
+    --surface: #1a2129;
+    --line: #2d3742;
+    --line-soft: #242d37;
+    --head: #1f2730;
+    --ink: #e3e9ef;
+    --soft: #9dabb9;
+    --faint: #6c7a88;
+    --nav: #0f151b;
+    --nav-hover: #1c2631;
+    --nav-active: #233344;
+    --accent: #5aa7e6;
+    --accent-soft: #16304a;
+    --select: #1d3a57;
+    --ok: #6ccf93;
+    --high: #f28b82;
+    --high-soft: #3a1c1a;
+    --medium: #f2b35a;
+    --medium-soft: #33260f;
+    --low: #9bb8e3;
+    --low-soft: #1d2838;
+    --info: #9dabb9;
+    --info-soft: #222b35;
+  }
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; display: flex; flex-direction: column; background: var(--app); color: var(--ink); font: 13.5px/1.45 var(--sans); }
+a { color: var(--accent); }
+code, .mono { font-family: var(--mono); font-size: 0.92em; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.grow { flex: 1; }
+.dim { color: var(--soft); }
+
+button, .button {
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; cursor: pointer;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 3px; padding: 4px 12px; font-size: 13px;
+}
+button:hover, .button:hover { border-color: var(--accent); color: var(--accent); }
+button:disabled { opacity: 0.5; cursor: not-allowed; color: inherit; border-color: var(--line); }
+
+/* ------------------------------------------------------------ top bar */
+.topbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 7px 16px; background: var(--nav); color: var(--nav-ink); }
+.topbar .product { font-weight: 600; font-size: 15px; }
+.topbar .change { color: var(--nav-soft); font-size: 12.5px; min-width: 0; overflow-wrap: anywhere; }
+.topbar button, .topbar .button { background: transparent; color: var(--nav-ink); border-color: #3b4c5e; }
+.topbar button:hover, .topbar .button:hover { color: #fff; border-color: #6d8299; }
+.scenario { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--nav-soft); }
+.scenario select { background: #2a3949; color: #fff; border: 1px solid #3b4c5e; border-radius: 3px; padding: 3px 6px; max-width: 220px; }
+.notice { margin: 0; padding: 8px 16px; background: var(--high-soft); color: var(--high); }
+
+/* ------------------------------------------------------------ playback */
+.playbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 8px 16px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.playbar button.primary { background: var(--accent); border-color: var(--accent); color: #fff; min-width: 84px; justify-content: center; }
+.playbar button.primary:hover { filter: brightness(1.08); color: #fff; }
+.playbar select { border: 1px solid var(--line); border-radius: 3px; padding: 3px 6px; background: var(--surface); }
+.playbar input[type="range"] { flex: 1 1 220px; min-width: 0; accent-color: var(--accent); }
+.playbar output { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 72px; }
+.outcome { flex: 1 1 100%; font-size: 13px; }
+.outcome:empty { display: none; }
+.outcome.ok { color: var(--ok); }
+.outcome.warn { color: var(--medium); }
+.outcome.bad { color: var(--high); font-weight: 600; }
+
+/* ------------------------------------------------------------ console */
+.console { flex: 1; min-height: 0; display: grid; grid-template-columns: 240px minmax(0, 1fr); }
+.tree { background: var(--nav); color: var(--nav-ink); overflow: auto; padding: 8px 0 16px; }
+.tree ul { list-style: none; margin: 0; padding: 0; }
+.tree li.group { padding: 12px 16px 4px; color: var(--nav-soft); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.04em; }
+.tree a { display: flex; align-items: center; gap: 8px; padding: 6px 16px; color: var(--nav-ink); text-decoration: none; border-left: 3px solid transparent; }
+.tree a:hover { background: var(--nav-hover); }
+.tree a[aria-current="page"] { background: var(--nav-active); border-left-color: var(--accent); color: #fff; }
+.tree .count { margin-left: auto; font-size: 11.5px; color: var(--nav-soft); }
+.tree .alert { margin-left: auto; min-width: 20px; text-align: center; font-size: 11px; font-weight: 600; background: var(--high); color: #fff; border-radius: 9px; padding: 0 6px; }
+.dot { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--faint); }
+.dot.Running { background: var(--accent); }
+.dot.Passed { background: var(--ok); }
+.dot.Stopped { background: var(--high); }
+.dot.Deferred, .dot.NotStarted { background: transparent; border: 1px solid var(--nav-soft); }
+
+/* min-width: 0 on every level keeps wide tables scrolling inside their pane
+   instead of widening the page. */
+.workspace { display: grid; grid-template-rows: minmax(200px, 55%) minmax(0, 1fr); grid-template-columns: minmax(0, 1fr); min-height: 0; min-width: 0; }
+.list-pane, .details-pane { display: flex; flex-direction: column; min-height: 0; min-width: 0; background: var(--surface); }
+.details-pane { border-top: 4px solid var(--app); }
+.pane-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 16px 8px; min-width: 0; }
+.pane-head h1, .pane-head h2 { margin: 0; font-size: 16px; font-weight: 600; overflow-wrap: anywhere; }
+.pane-head h2 small { font-weight: 400; color: var(--soft); font-size: 12.5px; margin-left: 6px; }
+.pane-head input { width: 220px; max-width: 100%; border: 1px solid var(--line); border-radius: 3px; padding: 4px 8px; background: var(--surface); }
+.count { font-size: 12px; color: var(--soft); }
+
+/* ------------------------------------------------------------ grids */
+.grid-wrap { flex: 1; min-height: 0; min-width: 0; overflow: auto; border-top: 1px solid var(--line); }
+table.grid { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.grid th { position: sticky; top: 0; z-index: 1; background: var(--head); text-align: left; font-weight: 600; color: var(--soft); font-size: 12px; padding: 6px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.grid td { padding: 6px 12px; border-bottom: 1px solid var(--line-soft); white-space: nowrap; vertical-align: top; }
+table.grid td.wrap { white-space: normal; min-width: 240px; }
+table.grid td.num, table.grid th.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.grid tbody tr.selectable { cursor: pointer; }
+table.grid tbody tr.selectable:hover td { background: var(--accent-soft); }
+table.grid tbody tr[aria-selected="true"] td { background: var(--select); }
+.empty { padding: 20px 16px; color: var(--soft); }
+
+.state { display: inline-flex; align-items: center; gap: 6px; }
+.state::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--faint); }
+.state.active { color: var(--accent); font-weight: 600; }
+.state.active::before { background: var(--accent); }
+.state.ok::before { background: var(--ok); }
+.state.bad { color: var(--high); font-weight: 600; }
+.state.bad::before { background: var(--high); }
+.state.warn { color: var(--medium); }
+.state.warn::before { background: var(--medium); }
+.muted { color: var(--faint); }
+
+/* ------------------------------------------------------------ details */
+.details-body { flex: 1; min-height: 0; min-width: 0; overflow: auto; border-top: 1px solid var(--line); }
+.props { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 0 40px; padding: 12px 16px; margin: 0; }
+.props div { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 12px; padding: 5px 0; border-bottom: 1px solid var(--line-soft); }
+.props dt { color: var(--soft); }
+.props dd { margin: 0; overflow-wrap: anywhere; }
+.section-title { margin: 14px 16px 6px; font-size: 13px; font-weight: 600; }
+.details-body .grid-wrap { overflow: visible; }
+.list-plain { margin: 0 16px 12px; padding-left: 18px; }
+.callout { margin: 12px 16px; padding: 10px 12px; background: var(--accent-soft); border-left: 3px solid var(--accent); }
+.callout.bad { background: var(--high-soft); border-left-color: var(--high); }
+
+.statusbar { display: flex; flex-wrap: wrap; gap: 4px 14px; padding: 4px 16px; background: var(--head); border-top: 1px solid var(--line); font-size: 12px; color: var(--soft); }
+
+/* Small screens: the tree becomes a strip, panes stack and scroll with the page. */
+@media (max-width: 860px) {
+  html, body { height: auto; }
+  .console { grid-template-columns: minmax(0, 1fr); }
+  .tree { padding: 4px 0; }
+  .tree ul { display: flex; flex-wrap: wrap; }
+  .tree li.group { display: none; }
+  .tree a { border-left: 0; border-bottom: 3px solid transparent; padding: 6px 10px; }
+  .tree a[aria-current="page"] { border-bottom-color: var(--accent); }
+  .tree .count, .tree .alert { margin-left: 4px; }
+  .workspace { display: block; }
+  .grid-wrap { max-height: 60vh; }
+  .props { grid-template-columns: minmax(0, 1fr); }
+  .props div { grid-template-columns: 120px minmax(0, 1fr); }
+  .pane-head input { width: 100%; }
+  .scenario { flex: 1 1 100%; }
+  .scenario select { flex: 1; max-width: none; }
+}

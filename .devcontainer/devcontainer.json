@@ -1,0 +1,23 @@
+{
+  "name": "Citrix Patch Waves",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/powershell:1": {}
+  },
+  "forwardPorts": [8768],
+  "portsAttributes": {
+    "8768": { "label": "Patch Waves console", "onAutoForward": "openBrowser" }
+  },
+  "postCreateCommand": "pwsh -NoProfile -File .devcontainer/setup.ps1",
+  "postAttachCommand": {
+    "console": "pwsh -NoProfile -File scripts/Start-Console.ps1 -Port 8768"
+  },
+  "customizations": {
+    "codespaces": {
+      "openFiles": [".devcontainer/README.md"]
+    },
+    "vscode": {
+      "extensions": ["ms-vscode.powershell"]
+    }
+  }
+}

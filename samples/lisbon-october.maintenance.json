@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "name": "2026-10 patching: Lisbon persistent and Remote PC desktops",
+  "change": "CHG-2026-1004",
+  "window": {
+    "start": "2026-10-04T21:00:00Z",
+    "end": "2026-10-05T03:00:00Z"
+  },
+  "target": {
+    "deliveryGroups": ["DG-LIS-W11-DED-FINANCE", "DG-LIS-W11-RPC-ENGINEERING"],
+    "include": [],
+    "exclude": ["LISW11FIN011"]
+  },
+  "waves": {
+    "canarySize": 2,
+    "waveSize": 10,
+    "concurrency": 5,
+    "failureBudget": 1,
+    "pollMinutes": 1
+  },
+  "drain": {
+    "timeoutMinutes": 60,
+    "forceLogoff": false,
+    "message": {
+      "enabled": true,
+      "title": "Planned maintenance",
+      "text": "This desktop will restart for security updates. Save your work and log off; you can reconnect after 03:00 UTC."
+    }
+  },
+  "patch": {
+    "windowsUpdates": {
+      "enabled": true,
+      "categories": ["Security Updates", "Critical Updates"]
+    },
+    "software": [
+      { "name": "Google Chrome", "wingetId": "Google.Chrome" },
+      { "name": "7-Zip", "wingetId": "7zip.7zip" }
+    ]
+  },
+  "reboot": {
+    "timeoutMinutes": 30
+  },
+  "verify": {
+    "services": ["BrokerAgent"]
+  }
+}

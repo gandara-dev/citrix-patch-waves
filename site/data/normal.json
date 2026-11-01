@@ -1,0 +1,2972 @@
+{
+  "kind": "citrix-patch-waves-run",
+  "schemaVersion": 1,
+  "toolVersion": "0.1.0",
+  "provider": "Simulation",
+  "simulation": true,
+  "maintenance": {
+    "name": "2026-10 patching: Lisbon persistent and Remote PC desktops",
+    "change": "CHG-2026-1004",
+    "windowStart": "2026-10-04T21:00:00Z",
+    "windowEnd": "2026-10-05T03:00:00Z",
+    "deliveryGroups": [
+      "DG-LIS-W11-DED-FINANCE",
+      "DG-LIS-W11-RPC-ENGINEERING"
+    ],
+    "canarySize": 2,
+    "waveSize": 10,
+    "concurrency": 5,
+    "failureBudget": 1,
+    "drainTimeoutMinutes": 60,
+    "forceLogoff": false,
+    "message": {
+      "title": "Planned maintenance",
+      "text": "This desktop will restart for security updates. Save your work and log off; you can reconnect after 03:00 UTC."
+    },
+    "windowsUpdates": [
+      "Security Updates",
+      "Critical Updates"
+    ],
+    "software": [
+      {
+        "name": "Google Chrome",
+        "wingetId": "Google.Chrome"
+      },
+      {
+        "name": "7-Zip",
+        "wingetId": "7zip.7zip"
+      }
+    ],
+    "rebootTimeoutMinutes": 30,
+    "services": [
+      "BrokerAgent"
+    ]
+  },
+  "startedAt": "2026-10-04T21:00:00Z",
+  "finishedAt": "2026-10-05T01:55:00Z",
+  "outcome": "CompletedWithExceptions",
+  "stopReason": null,
+  "totals": {
+    "planned": 33,
+    "completed": 30,
+    "failed": 0,
+    "notDrained": 3,
+    "deferred": 0,
+    "notStarted": 0,
+    "excluded": 3,
+    "leftInMaintenance": 0
+  },
+  "waves": [
+    {
+      "number": 1,
+      "kind": "Canary",
+      "failureBudget": 0,
+      "machines": [
+        "LISW11FIN001",
+        "LISW11ENG001"
+      ],
+      "startedAt": "2026-10-04T21:00:00Z",
+      "finishedAt": "2026-10-04T21:47:00Z",
+      "completed": 2,
+      "failed": 0,
+      "notDrained": 0,
+      "deferred": 0,
+      "result": "Passed"
+    },
+    {
+      "number": 2,
+      "kind": "Wave",
+      "failureBudget": 1,
+      "machines": [
+        "LISW11FIN002",
+        "LISW11FIN003",
+        "LISW11FIN004",
+        "LISW11FIN005",
+        "LISW11FIN006",
+        "LISW11FIN007",
+        "LISW11FIN008",
+        "LISW11FIN009",
+        "LISW11FIN010",
+        "LISW11FIN012"
+      ],
+      "startedAt": "2026-10-04T21:47:00Z",
+      "finishedAt": "2026-10-04T23:04:00Z",
+      "completed": 9,
+      "failed": 0,
+      "notDrained": 1,
+      "deferred": 0,
+      "result": "Passed"
+    },
+    {
+      "number": 3,
+      "kind": "Wave",
+      "failureBudget": 1,
+      "machines": [
+        "LISW11FIN013",
+        "LISW11FIN014",
+        "LISW11FIN015",
+        "LISW11FIN016",
+        "LISW11FIN017",
+        "LISW11FIN018",
+        "LISW11FIN020",
+        "LISW11FIN021",
+        "LISW11FIN023",
+        "LISW11FIN024"
+      ],
+      "startedAt": "2026-10-04T23:04:00Z",
+      "finishedAt": "2026-10-05T00:10:00Z",
+      "completed": 9,
+      "failed": 0,
+      "notDrained": 1,
+      "deferred": 0,
+      "result": "Passed"
+    },
+    {
+      "number": 4,
+      "kind": "Wave",
+      "failureBudget": 1,
+      "machines": [
+        "LISW11ENG002",
+        "LISW11ENG003",
+        "LISW11ENG004",
+        "LISW11ENG005",
+        "LISW11ENG006",
+        "LISW11ENG007",
+        "LISW11ENG008",
+        "LISW11ENG009",
+        "LISW11ENG010",
+        "LISW11ENG011"
+      ],
+      "startedAt": "2026-10-05T00:10:00Z",
+      "finishedAt": "2026-10-05T01:28:00Z",
+      "completed": 9,
+      "failed": 0,
+      "notDrained": 1,
+      "deferred": 0,
+      "result": "Passed"
+    },
+    {
+      "number": 5,
+      "kind": "Wave",
+      "failureBudget": 1,
+      "machines": [
+        "LISW11ENG012"
+      ],
+      "startedAt": "2026-10-05T01:28:00Z",
+      "finishedAt": "2026-10-05T01:55:00Z",
+      "completed": 1,
+      "failed": 0,
+      "notDrained": 0,
+      "deferred": 0,
+      "result": "Passed"
+    }
+  ],
+  "machines": [
+    {
+      "name": "LISW11ENG001",
+      "deliveryGroup": "DG-LIS-W11-RPC-ENGINEERING",
+      "wave": 1,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 1,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)",
+        "Google Chrome (Google.Chrome) updated",
+        "7-Zip (7zip.7zip) updated"
+      ],
+      "drainStartedAt": "2026-10-04T21:00:00Z",
+      "drainedAt": "2026-10-04T21:18:00Z",
+      "patchStartedAt": "2026-10-04T21:18:00Z",
+      "patchFinishedAt": "2026-10-04T21:41:00Z",
+      "restartedAt": "2026-10-04T21:41:00Z",
+      "registeredAt": "2026-10-04T21:47:00Z",
+      "finishedAt": "2026-10-04T21:47:00Z"
+    },
+    {
+      "name": "LISW11FIN001",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 1,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 0,
+      "messageSent": false,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)",
+        "Google Chrome (Google.Chrome) updated",
+        "7-Zip (7zip.7zip) updated"
+      ],
+      "drainStartedAt": "2026-10-04T21:00:00Z",
+      "drainedAt": "2026-10-04T21:00:00Z",
+      "patchStartedAt": "2026-10-04T21:00:00Z",
+      "patchFinishedAt": "2026-10-04T21:22:00Z",
+      "restartedAt": "2026-10-04T21:22:00Z",
+      "registeredAt": "2026-10-04T21:27:00Z",
+      "finishedAt": "2026-10-04T21:27:00Z"
+    },
+    {
+      "name": "LISW11FIN002",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 2,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 2,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)",
+        "Google Chrome (Google.Chrome) updated",
+        "7-Zip (7zip.7zip) updated"
+      ],
+      "drainStartedAt": "2026-10-04T21:47:00Z",
+      "drainedAt": "2026-10-04T22:29:00Z",
+      "patchStartedAt": "2026-10-04T22:29:00Z",
+      "patchFinishedAt": "2026-10-04T22:58:00Z",
+      "restartedAt": "2026-10-04T22:58:00Z",
+      "registeredAt": "2026-10-04T23:04:00Z",
+      "finishedAt": "2026-10-04T23:04:00Z"
+    },
+    {
+      "name": "LISW11FIN003",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 2,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 1,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)"
+      ],
+      "drainStartedAt": "2026-10-04T21:47:00Z",
+      "drainedAt": "2026-10-04T21:55:00Z",
+      "patchStartedAt": "2026-10-04T21:55:00Z",
+      "patchFinishedAt": "2026-10-04T22:15:00Z",
+      "restartedAt": "2026-10-04T22:15:00Z",
+      "registeredAt": "2026-10-04T22:22:00Z",
+      "finishedAt": "2026-10-04T22:22:00Z"
+    },
+    {
+      "name": "LISW11FIN004",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 2,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 0,
+      "messageSent": false,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)",
+        "Google Chrome (Google.Chrome) updated",
+        "7-Zip (7zip.7zip) updated"
+      ],
+      "drainStartedAt": "2026-10-04T21:47:00Z",
+      "drainedAt": "2026-10-04T21:47:00Z",
+      "patchStartedAt": "2026-10-04T21:47:00Z",
+      "patchFinishedAt": "2026-10-04T22:14:00Z",
+      "restartedAt": "2026-10-04T22:14:00Z",
+      "registeredAt": "2026-10-04T22:17:00Z",
+      "finishedAt": "2026-10-04T22:17:00Z"
+    },
+    {
+      "name": "LISW11FIN005",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 2,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 2,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)",
+        "Google Chrome (Google.Chrome) updated",
+        "7-Zip (7zip.7zip) updated"
+      ],
+      "drainStartedAt": "2026-10-04T21:47:00Z",
+      "drainedAt": "2026-10-04T22:22:00Z",
+      "patchStartedAt": "2026-10-04T22:22:00Z",
+      "patchFinishedAt": "2026-10-04T22:40:00Z",
+      "restartedAt": "2026-10-04T22:40:00Z",
+      "registeredAt": "2026-10-04T22:44:00Z",
+      "finishedAt": "2026-10-04T22:44:00Z"
+    },
+    {
+      "name": "LISW11FIN006",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 2,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 1,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)"
+      ],
+      "drainStartedAt": "2026-10-04T21:47:00Z",
+      "drainedAt": "2026-10-04T21:59:00Z",
+      "patchStartedAt": "2026-10-04T21:59:00Z",
+      "patchFinishedAt": "2026-10-04T22:24:00Z",
+      "restartedAt": "2026-10-04T22:24:00Z",
+      "registeredAt": "2026-10-04T22:29:00Z",
+      "finishedAt": "2026-10-04T22:29:00Z"
+    },
+    {
+      "name": "LISW11FIN007",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 2,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 0,
+      "messageSent": false,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)",
+        "Google Chrome (Google.Chrome) updated",
+        "7-Zip (7zip.7zip) updated"
+      ],
+      "drainStartedAt": "2026-10-04T21:47:00Z",
+      "drainedAt": "2026-10-04T21:47:00Z",
+      "patchStartedAt": "2026-10-04T21:47:00Z",
+      "patchFinishedAt": "2026-10-04T22:03:00Z",
+      "restartedAt": "2026-10-04T22:03:00Z",
+      "registeredAt": "2026-10-04T22:09:00Z",
+      "finishedAt": "2026-10-04T22:09:00Z"
+    },
+    {
+      "name": "LISW11FIN008",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 2,
+      "state": "NotDrained",
+      "inMaintenanceMode": false,
+      "detail": "1 session(s) still active after 60 minutes; returned to service unpatched.",
+      "sessionsAtDrain": 1,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [],
+      "drainStartedAt": "2026-10-04T21:47:00Z",
+      "drainedAt": null,
+      "patchStartedAt": null,
+      "patchFinishedAt": null,
+      "restartedAt": null,
+      "registeredAt": null,
+      "finishedAt": "2026-10-04T22:47:00Z"
+    },
+    {
+      "name": "LISW11FIN009",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 2,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 1,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)"
+      ],
+      "drainStartedAt": "2026-10-04T21:47:00Z",
+      "drainedAt": "2026-10-04T22:03:00Z",
+      "patchStartedAt": "2026-10-04T22:03:00Z",
+      "patchFinishedAt": "2026-10-04T22:17:00Z",
+      "restartedAt": "2026-10-04T22:17:00Z",
+      "registeredAt": "2026-10-04T22:20:00Z",
+      "finishedAt": "2026-10-04T22:20:00Z"
+    },
+    {
+      "name": "LISW11FIN010",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 2,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 1,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)",
+        "Google Chrome (Google.Chrome) updated",
+        "7-Zip (7zip.7zip) updated"
+      ],
+      "drainStartedAt": "2026-10-04T21:47:00Z",
+      "drainedAt": "2026-10-04T22:16:00Z",
+      "patchStartedAt": "2026-10-04T22:16:00Z",
+      "patchFinishedAt": "2026-10-04T22:37:00Z",
+      "restartedAt": "2026-10-04T22:37:00Z",
+      "registeredAt": "2026-10-04T22:41:00Z",
+      "finishedAt": "2026-10-04T22:41:00Z"
+    },
+    {
+      "name": "LISW11FIN012",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 2,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 2,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)"
+      ],
+      "drainStartedAt": "2026-10-04T21:47:00Z",
+      "drainedAt": "2026-10-04T22:19:00Z",
+      "patchStartedAt": "2026-10-04T22:19:00Z",
+      "patchFinishedAt": "2026-10-04T22:38:00Z",
+      "restartedAt": "2026-10-04T22:38:00Z",
+      "registeredAt": "2026-10-04T22:44:00Z",
+      "finishedAt": "2026-10-04T22:44:00Z"
+    },
+    {
+      "name": "LISW11FIN013",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 3,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 1,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)",
+        "Google Chrome (Google.Chrome) updated",
+        "7-Zip (7zip.7zip) updated"
+      ],
+      "drainStartedAt": "2026-10-04T23:04:00Z",
+      "drainedAt": "2026-10-04T23:37:00Z",
+      "patchStartedAt": "2026-10-04T23:37:00Z",
+      "patchFinishedAt": "2026-10-05T00:03:00Z",
+      "restartedAt": "2026-10-05T00:03:00Z",
+      "registeredAt": "2026-10-05T00:10:00Z",
+      "finishedAt": "2026-10-05T00:10:00Z"
+    },
+    {
+      "name": "LISW11FIN014",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 3,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 0,
+      "messageSent": false,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)",
+        "Google Chrome (Google.Chrome) updated",
+        "7-Zip (7zip.7zip) updated"
+      ],
+      "drainStartedAt": "2026-10-04T23:04:00Z",
+      "drainedAt": "2026-10-04T23:04:00Z",
+      "patchStartedAt": "2026-10-04T23:04:00Z",
+      "patchFinishedAt": "2026-10-04T23:21:00Z",
+      "restartedAt": "2026-10-04T23:21:00Z",
+      "registeredAt": "2026-10-04T23:24:00Z",
+      "finishedAt": "2026-10-04T23:24:00Z"
+    },
+    {
+      "name": "LISW11FIN015",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 3,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 2,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)"
+      ],
+      "drainStartedAt": "2026-10-04T23:04:00Z",
+      "drainedAt": "2026-10-04T23:29:00Z",
+      "patchStartedAt": "2026-10-04T23:29:00Z",
+      "patchFinishedAt": "2026-10-04T23:53:00Z",
+      "restartedAt": "2026-10-04T23:53:00Z",
+      "registeredAt": "2026-10-04T23:57:00Z",
+      "finishedAt": "2026-10-04T23:57:00Z"
+    },
+    {
+      "name": "LISW11FIN016",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 3,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 1,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)",
+        "Google Chrome (Google.Chrome) updated",
+        "7-Zip (7zip.7zip) updated"
+      ],
+      "drainStartedAt": "2026-10-04T23:04:00Z",
+      "drainedAt": "2026-10-04T23:41:00Z",
+      "patchStartedAt": "2026-10-04T23:41:00Z",
+      "patchFinishedAt": "2026-10-04T23:56:00Z",
+      "restartedAt": "2026-10-04T23:56:00Z",
+      "registeredAt": "2026-10-05T00:01:00Z",
+      "finishedAt": "2026-10-05T00:01:00Z"
+    },
+    {
+      "name": "LISW11FIN017",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 3,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 0,
+      "messageSent": false,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)",
+        "Google Chrome (Google.Chrome) updated",
+        "7-Zip (7zip.7zip) updated"
+      ],
+      "drainStartedAt": "2026-10-04T23:04:00Z",
+      "drainedAt": "2026-10-04T23:04:00Z",
+      "patchStartedAt": "2026-10-04T23:04:00Z",
+      "patchFinishedAt": "2026-10-04T23:26:00Z",
+      "restartedAt": "2026-10-04T23:26:00Z",
+      "registeredAt": "2026-10-04T23:32:00Z",
+      "finishedAt": "2026-10-04T23:32:00Z"
+    },
+    {
+      "name": "LISW11FIN018",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 3,
+      "state": "NotDrained",
+      "inMaintenanceMode": false,
+      "detail": "1 session(s) still active after 60 minutes; returned to service unpatched.",
+      "sessionsAtDrain": 1,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [],
+      "drainStartedAt": "2026-10-04T23:04:00Z",
+      "drainedAt": null,
+      "patchStartedAt": null,
+      "patchFinishedAt": null,
+      "restartedAt": null,
+      "registeredAt": null,
+      "finishedAt": "2026-10-05T00:04:00Z"
+    },
+    {
+      "name": "LISW11FIN020",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 3,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 1,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)",
+        "Google Chrome (Google.Chrome) updated",
+        "7-Zip (7zip.7zip) updated"
+      ],
+      "drainStartedAt": "2026-10-04T23:04:00Z",
+      "drainedAt": "2026-10-04T23:23:00Z",
+      "patchStartedAt": "2026-10-04T23:23:00Z",
+      "patchFinishedAt": "2026-10-04T23:50:00Z",
+      "restartedAt": "2026-10-04T23:50:00Z",
+      "registeredAt": "2026-10-04T23:54:00Z",
+      "finishedAt": "2026-10-04T23:54:00Z"
+    },
+    {
+      "name": "LISW11FIN021",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 3,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 0,
+      "messageSent": false,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)"
+      ],
+      "drainStartedAt": "2026-10-04T23:04:00Z",
+      "drainedAt": "2026-10-04T23:04:00Z",
+      "patchStartedAt": "2026-10-04T23:04:00Z",
+      "patchFinishedAt": "2026-10-04T23:22:00Z",
+      "restartedAt": "2026-10-04T23:22:00Z",
+      "registeredAt": "2026-10-04T23:27:00Z",
+      "finishedAt": "2026-10-04T23:27:00Z"
+    },
+    {
+      "name": "LISW11FIN023",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 3,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 1,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)",
+        "Google Chrome (Google.Chrome) updated",
+        "7-Zip (7zip.7zip) updated"
+      ],
+      "drainStartedAt": "2026-10-04T23:04:00Z",
+      "drainedAt": "2026-10-04T23:27:00Z",
+      "patchStartedAt": "2026-10-04T23:27:00Z",
+      "patchFinishedAt": "2026-10-04T23:43:00Z",
+      "restartedAt": "2026-10-04T23:43:00Z",
+      "registeredAt": "2026-10-04T23:50:00Z",
+      "finishedAt": "2026-10-04T23:50:00Z"
+    },
+    {
+      "name": "LISW11FIN024",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "wave": 3,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 0,
+      "messageSent": false,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)"
+      ],
+      "drainStartedAt": "2026-10-04T23:04:00Z",
+      "drainedAt": "2026-10-04T23:04:00Z",
+      "patchStartedAt": "2026-10-04T23:04:00Z",
+      "patchFinishedAt": "2026-10-04T23:27:00Z",
+      "restartedAt": "2026-10-04T23:27:00Z",
+      "registeredAt": "2026-10-04T23:30:00Z",
+      "finishedAt": "2026-10-04T23:30:00Z"
+    },
+    {
+      "name": "LISW11ENG002",
+      "deliveryGroup": "DG-LIS-W11-RPC-ENGINEERING",
+      "wave": 4,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 0,
+      "messageSent": false,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)",
+        "Google Chrome (Google.Chrome) updated",
+        "7-Zip (7zip.7zip) updated"
+      ],
+      "drainStartedAt": "2026-10-05T00:10:00Z",
+      "drainedAt": "2026-10-05T00:10:00Z",
+      "patchStartedAt": "2026-10-05T00:10:00Z",
+      "patchFinishedAt": "2026-10-05T00:24:00Z",
+      "restartedAt": "2026-10-05T00:24:00Z",
+      "registeredAt": "2026-10-05T00:31:00Z",
+      "finishedAt": "2026-10-05T00:31:00Z"
+    },
+    {
+      "name": "LISW11ENG003",
+      "deliveryGroup": "DG-LIS-W11-RPC-ENGINEERING",
+      "wave": 4,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 2,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)"
+      ],
+      "drainStartedAt": "2026-10-05T00:10:00Z",
+      "drainedAt": "2026-10-05T01:03:00Z",
+      "patchStartedAt": "2026-10-05T01:03:00Z",
+      "patchFinishedAt": "2026-10-05T01:24:00Z",
+      "restartedAt": "2026-10-05T01:24:00Z",
+      "registeredAt": "2026-10-05T01:27:00Z",
+      "finishedAt": "2026-10-05T01:27:00Z"
+    },
+    {
+      "name": "LISW11ENG004",
+      "deliveryGroup": "DG-LIS-W11-RPC-ENGINEERING",
+      "wave": 4,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 1,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)",
+        "Google Chrome (Google.Chrome) updated",
+        "7-Zip (7zip.7zip) updated"
+      ],
+      "drainStartedAt": "2026-10-05T00:10:00Z",
+      "drainedAt": "2026-10-05T00:32:00Z",
+      "patchStartedAt": "2026-10-05T00:32:00Z",
+      "patchFinishedAt": "2026-10-05T01:00:00Z",
+      "restartedAt": "2026-10-05T01:00:00Z",
+      "registeredAt": "2026-10-05T01:04:00Z",
+      "finishedAt": "2026-10-05T01:04:00Z"
+    },
+    {
+      "name": "LISW11ENG005",
+      "deliveryGroup": "DG-LIS-W11-RPC-ENGINEERING",
+      "wave": 4,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 0,
+      "messageSent": false,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)",
+        "Google Chrome (Google.Chrome) updated",
+        "7-Zip (7zip.7zip) updated"
+      ],
+      "drainStartedAt": "2026-10-05T00:10:00Z",
+      "drainedAt": "2026-10-05T00:10:00Z",
+      "patchStartedAt": "2026-10-05T00:10:00Z",
+      "patchFinishedAt": "2026-10-05T00:29:00Z",
+      "restartedAt": "2026-10-05T00:29:00Z",
+      "registeredAt": "2026-10-05T00:34:00Z",
+      "finishedAt": "2026-10-05T00:34:00Z"
+    },
+    {
+      "name": "LISW11ENG006",
+      "deliveryGroup": "DG-LIS-W11-RPC-ENGINEERING",
+      "wave": 4,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 2,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)"
+      ],
+      "drainStartedAt": "2026-10-05T00:10:00Z",
+      "drainedAt": "2026-10-05T00:56:00Z",
+      "patchStartedAt": "2026-10-05T00:56:00Z",
+      "patchFinishedAt": "2026-10-05T01:22:00Z",
+      "restartedAt": "2026-10-05T01:22:00Z",
+      "registeredAt": "2026-10-05T01:28:00Z",
+      "finishedAt": "2026-10-05T01:28:00Z"
+    },
+    {
+      "name": "LISW11ENG007",
+      "deliveryGroup": "DG-LIS-W11-RPC-ENGINEERING",
+      "wave": 4,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 1,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)",
+        "Google Chrome (Google.Chrome) updated",
+        "7-Zip (7zip.7zip) updated"
+      ],
+      "drainStartedAt": "2026-10-05T00:10:00Z",
+      "drainedAt": "2026-10-05T00:36:00Z",
+      "patchStartedAt": "2026-10-05T00:36:00Z",
+      "patchFinishedAt": "2026-10-05T00:53:00Z",
+      "restartedAt": "2026-10-05T00:53:00Z",
+      "registeredAt": "2026-10-05T01:00:00Z",
+      "finishedAt": "2026-10-05T01:00:00Z"
+    },
+    {
+      "name": "LISW11ENG008",
+      "deliveryGroup": "DG-LIS-W11-RPC-ENGINEERING",
+      "wave": 4,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 0,
+      "messageSent": false,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)",
+        "Google Chrome (Google.Chrome) updated",
+        "7-Zip (7zip.7zip) updated"
+      ],
+      "drainStartedAt": "2026-10-05T00:10:00Z",
+      "drainedAt": "2026-10-05T00:10:00Z",
+      "patchStartedAt": "2026-10-05T00:10:00Z",
+      "patchFinishedAt": "2026-10-05T00:34:00Z",
+      "restartedAt": "2026-10-05T00:34:00Z",
+      "registeredAt": "2026-10-05T00:37:00Z",
+      "finishedAt": "2026-10-05T00:37:00Z"
+    },
+    {
+      "name": "LISW11ENG009",
+      "deliveryGroup": "DG-LIS-W11-RPC-ENGINEERING",
+      "wave": 4,
+      "state": "NotDrained",
+      "inMaintenanceMode": false,
+      "detail": "1 session(s) still active after 60 minutes; returned to service unpatched.",
+      "sessionsAtDrain": 1,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [],
+      "drainStartedAt": "2026-10-05T00:10:00Z",
+      "drainedAt": null,
+      "patchStartedAt": null,
+      "patchFinishedAt": null,
+      "restartedAt": null,
+      "registeredAt": null,
+      "finishedAt": "2026-10-05T01:10:00Z"
+    },
+    {
+      "name": "LISW11ENG010",
+      "deliveryGroup": "DG-LIS-W11-RPC-ENGINEERING",
+      "wave": 4,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 1,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)",
+        "Google Chrome (Google.Chrome) updated",
+        "7-Zip (7zip.7zip) updated"
+      ],
+      "drainStartedAt": "2026-10-05T00:10:00Z",
+      "drainedAt": "2026-10-05T00:40:00Z",
+      "patchStartedAt": "2026-10-05T00:40:00Z",
+      "patchFinishedAt": "2026-10-05T01:02:00Z",
+      "restartedAt": "2026-10-05T01:02:00Z",
+      "registeredAt": "2026-10-05T01:07:00Z",
+      "finishedAt": "2026-10-05T01:07:00Z"
+    },
+    {
+      "name": "LISW11ENG011",
+      "deliveryGroup": "DG-LIS-W11-RPC-ENGINEERING",
+      "wave": 4,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 1,
+      "messageSent": true,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)",
+        "Google Chrome (Google.Chrome) updated",
+        "7-Zip (7zip.7zip) updated"
+      ],
+      "drainStartedAt": "2026-10-05T00:10:00Z",
+      "drainedAt": "2026-10-05T00:18:00Z",
+      "patchStartedAt": "2026-10-05T00:18:00Z",
+      "patchFinishedAt": "2026-10-05T00:47:00Z",
+      "restartedAt": "2026-10-05T00:47:00Z",
+      "registeredAt": "2026-10-05T00:53:00Z",
+      "finishedAt": "2026-10-05T00:53:00Z"
+    },
+    {
+      "name": "LISW11ENG012",
+      "deliveryGroup": "DG-LIS-W11-RPC-ENGINEERING",
+      "wave": 5,
+      "state": "Completed",
+      "inMaintenanceMode": false,
+      "detail": "",
+      "sessionsAtDrain": 0,
+      "messageSent": false,
+      "forcedLogoff": false,
+      "forcedLogoffAt": null,
+      "installed": [
+        "2026-10 Cumulative Update for Windows 11 Version 24H2 for x64-based Systems (KB5990117)",
+        "2026-10 Servicing Stack Update for Windows 11 Version 24H2 (KB5990102)"
+      ],
+      "drainStartedAt": "2026-10-05T01:28:00Z",
+      "drainedAt": "2026-10-05T01:28:00Z",
+      "patchStartedAt": "2026-10-05T01:28:00Z",
+      "patchFinishedAt": "2026-10-05T01:48:00Z",
+      "restartedAt": "2026-10-05T01:48:00Z",
+      "registeredAt": "2026-10-05T01:55:00Z",
+      "finishedAt": "2026-10-05T01:55:00Z"
+    }
+  ],
+  "exclusions": [
+    {
+      "name": "LISW11FIN011",
+      "machineName": "CORP\\LISW11FIN011",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "catalog": "MC-LIS-W11-DED-FINANCE",
+      "provisioning": "MCS",
+      "allocation": "Static",
+      "sessionsAtPlan": 0,
+      "reason": "Excluded in the maintenance file."
+    },
+    {
+      "name": "LISW11FIN019",
+      "machineName": "CORP\\LISW11FIN019",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "catalog": "MC-LIS-W11-DED-FINANCE",
+      "provisioning": "MCS",
+      "allocation": "Static",
+      "sessionsAtPlan": 1,
+      "reason": "Already in maintenance mode before the change; left untouched so it does not go back into service by mistake."
+    },
+    {
+      "name": "LISW11FIN022",
+      "machineName": "CORP\\LISW11FIN022",
+      "deliveryGroup": "DG-LIS-W11-DED-FINANCE",
+      "catalog": "MC-LIS-W11-DED-FINANCE",
+      "provisioning": "MCS",
+      "allocation": "Static",
+      "sessionsAtPlan": 2,
+      "reason": "Not registered before the change (Unregistered, power Off); fix it first so a problem after the reboot is not blamed on the patch."
+    }
+  ],
+  "warnings": [],
+  "events": [
+    {
+      "time": "2026-10-04T21:00:00Z",
+      "wave": 0,
+      "machine": "",
+      "step": "Started",
+      "detail": "33 machines in 5 waves on Simulation."
+    },
+    {
+      "time": "2026-10-04T21:00:00Z",
+      "wave": 1,
+      "machine": "",
+      "step": "WaveStarted",
+      "detail": "Canary wave with 2 machines."
+    },
+    {
+      "time": "2026-10-04T21:00:00Z",
+      "wave": 1,
+      "machine": "LISW11FIN001",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:00:00Z",
+      "wave": 1,
+      "machine": "LISW11ENG001",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:00:00Z",
+      "wave": 1,
+      "machine": "LISW11ENG001",
+      "step": "MessageSent",
+      "detail": "1 session(s)."
+    },
+    {
+      "time": "2026-10-04T21:00:00Z",
+      "wave": 1,
+      "machine": "LISW11FIN001",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:00:00Z",
+      "wave": 1,
+      "machine": "LISW11FIN001",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:18:00Z",
+      "wave": 1,
+      "machine": "LISW11ENG001",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:18:00Z",
+      "wave": 1,
+      "machine": "LISW11ENG001",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:22:00Z",
+      "wave": 1,
+      "machine": "LISW11FIN001",
+      "step": "Patched",
+      "detail": "4 item(s) installed."
+    },
+    {
+      "time": "2026-10-04T21:22:00Z",
+      "wave": 1,
+      "machine": "LISW11FIN001",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:27:00Z",
+      "wave": 1,
+      "machine": "LISW11FIN001",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:27:00Z",
+      "wave": 1,
+      "machine": "LISW11FIN001",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:27:00Z",
+      "wave": 1,
+      "machine": "LISW11FIN001",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:41:00Z",
+      "wave": 1,
+      "machine": "LISW11ENG001",
+      "step": "Patched",
+      "detail": "4 item(s) installed."
+    },
+    {
+      "time": "2026-10-04T21:41:00Z",
+      "wave": 1,
+      "machine": "LISW11ENG001",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 1,
+      "machine": "LISW11ENG001",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 1,
+      "machine": "LISW11ENG001",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 1,
+      "machine": "LISW11ENG001",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 1,
+      "machine": "",
+      "step": "WavePassed",
+      "detail": "2 completed, 0 failed, 0 not drained, 0 deferred."
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "",
+      "step": "WaveStarted",
+      "detail": "Wave wave with 10 machines."
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN002",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN002",
+      "step": "MessageSent",
+      "detail": "2 session(s)."
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN003",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN003",
+      "step": "MessageSent",
+      "detail": "1 session(s)."
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN004",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN005",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN005",
+      "step": "MessageSent",
+      "detail": "2 session(s)."
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN006",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN006",
+      "step": "MessageSent",
+      "detail": "1 session(s)."
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN007",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN008",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN008",
+      "step": "MessageSent",
+      "detail": "1 session(s)."
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN009",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN009",
+      "step": "MessageSent",
+      "detail": "1 session(s)."
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN010",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN010",
+      "step": "MessageSent",
+      "detail": "1 session(s)."
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN012",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN012",
+      "step": "MessageSent",
+      "detail": "2 session(s)."
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN004",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN007",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN004",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN007",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:55:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN003",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:55:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN003",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:59:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN006",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T21:59:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN006",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:03:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN009",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:03:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN009",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:03:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN007",
+      "step": "Patched",
+      "detail": "4 item(s) installed."
+    },
+    {
+      "time": "2026-10-04T22:03:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN007",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:09:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN007",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:09:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN007",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:09:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN007",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:14:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN004",
+      "step": "Patched",
+      "detail": "4 item(s) installed."
+    },
+    {
+      "time": "2026-10-04T22:14:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN004",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:15:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN003",
+      "step": "Patched",
+      "detail": "2 item(s) installed."
+    },
+    {
+      "time": "2026-10-04T22:15:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN003",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:16:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN010",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:16:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN010",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:17:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN009",
+      "step": "Patched",
+      "detail": "2 item(s) installed."
+    },
+    {
+      "time": "2026-10-04T22:17:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN009",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:17:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN004",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:17:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN004",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:17:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN004",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:19:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN012",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:19:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN012",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:20:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN009",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:20:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN009",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:20:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN009",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:22:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN005",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:22:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN005",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:22:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN003",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:22:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN003",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:22:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN003",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:24:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN006",
+      "step": "Patched",
+      "detail": "2 item(s) installed."
+    },
+    {
+      "time": "2026-10-04T22:24:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN006",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:29:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN002",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:29:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN002",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:29:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN006",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:29:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN006",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:29:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN006",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:37:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN010",
+      "step": "Patched",
+      "detail": "4 item(s) installed."
+    },
+    {
+      "time": "2026-10-04T22:37:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN010",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:38:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN012",
+      "step": "Patched",
+      "detail": "2 item(s) installed."
+    },
+    {
+      "time": "2026-10-04T22:38:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN012",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:40:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN005",
+      "step": "Patched",
+      "detail": "4 item(s) installed."
+    },
+    {
+      "time": "2026-10-04T22:40:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN005",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:41:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN010",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:41:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN010",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:41:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN010",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:44:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN005",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:44:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN012",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:44:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN005",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:44:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN005",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:44:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN012",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:44:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN012",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN008",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T22:47:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN008",
+      "step": "NotDrained",
+      "detail": "1 session(s) still active after 60 minutes; returned to service unpatched."
+    },
+    {
+      "time": "2026-10-04T22:58:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN002",
+      "step": "Patched",
+      "detail": "4 item(s) installed."
+    },
+    {
+      "time": "2026-10-04T22:58:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN002",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN002",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN002",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 2,
+      "machine": "LISW11FIN002",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 2,
+      "machine": "",
+      "step": "WavePassed",
+      "detail": "9 completed, 0 failed, 1 not drained, 0 deferred."
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "",
+      "step": "WaveStarted",
+      "detail": "Wave wave with 10 machines."
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN013",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN013",
+      "step": "MessageSent",
+      "detail": "1 session(s)."
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN014",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN015",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN015",
+      "step": "MessageSent",
+      "detail": "2 session(s)."
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN016",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN016",
+      "step": "MessageSent",
+      "detail": "1 session(s)."
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN017",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN018",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN018",
+      "step": "MessageSent",
+      "detail": "1 session(s)."
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN020",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN020",
+      "step": "MessageSent",
+      "detail": "1 session(s)."
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN021",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN023",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN023",
+      "step": "MessageSent",
+      "detail": "1 session(s)."
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN024",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN014",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN017",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN021",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN024",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN014",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN017",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN021",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN024",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:21:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN014",
+      "step": "Patched",
+      "detail": "4 item(s) installed."
+    },
+    {
+      "time": "2026-10-04T23:21:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN014",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:22:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN021",
+      "step": "Patched",
+      "detail": "2 item(s) installed."
+    },
+    {
+      "time": "2026-10-04T23:22:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN021",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:23:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN020",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:23:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN020",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:24:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN014",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:24:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN014",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:24:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN014",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:26:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN017",
+      "step": "Patched",
+      "detail": "4 item(s) installed."
+    },
+    {
+      "time": "2026-10-04T23:26:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN017",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:27:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN023",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:27:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN023",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:27:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN024",
+      "step": "Patched",
+      "detail": "2 item(s) installed."
+    },
+    {
+      "time": "2026-10-04T23:27:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN024",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:27:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN021",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:27:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN021",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:27:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN021",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:29:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN015",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:29:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN015",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:30:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN024",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:30:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN024",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:30:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN024",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:32:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN017",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:32:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN017",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:32:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN017",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:37:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN013",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:37:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN013",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:41:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN016",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:41:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN016",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:43:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN023",
+      "step": "Patched",
+      "detail": "4 item(s) installed."
+    },
+    {
+      "time": "2026-10-04T23:43:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN023",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:50:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN020",
+      "step": "Patched",
+      "detail": "4 item(s) installed."
+    },
+    {
+      "time": "2026-10-04T23:50:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN020",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:50:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN023",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:50:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN023",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:50:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN023",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:53:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN015",
+      "step": "Patched",
+      "detail": "2 item(s) installed."
+    },
+    {
+      "time": "2026-10-04T23:53:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN015",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:54:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN020",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:54:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN020",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:54:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN020",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:56:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN016",
+      "step": "Patched",
+      "detail": "4 item(s) installed."
+    },
+    {
+      "time": "2026-10-04T23:56:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN016",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:57:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN015",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:57:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN015",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-04T23:57:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN015",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:01:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN016",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:01:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN016",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:01:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN016",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:03:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN013",
+      "step": "Patched",
+      "detail": "4 item(s) installed."
+    },
+    {
+      "time": "2026-10-05T00:03:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN013",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN018",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:04:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN018",
+      "step": "NotDrained",
+      "detail": "1 session(s) still active after 60 minutes; returned to service unpatched."
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN013",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN013",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 3,
+      "machine": "LISW11FIN013",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 3,
+      "machine": "",
+      "step": "WavePassed",
+      "detail": "9 completed, 0 failed, 1 not drained, 0 deferred."
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "",
+      "step": "WaveStarted",
+      "detail": "Wave wave with 10 machines."
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG002",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG003",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG003",
+      "step": "MessageSent",
+      "detail": "2 session(s)."
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG004",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG004",
+      "step": "MessageSent",
+      "detail": "1 session(s)."
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG005",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG006",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG006",
+      "step": "MessageSent",
+      "detail": "2 session(s)."
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG007",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG007",
+      "step": "MessageSent",
+      "detail": "1 session(s)."
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG008",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG009",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG009",
+      "step": "MessageSent",
+      "detail": "1 session(s)."
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG010",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG010",
+      "step": "MessageSent",
+      "detail": "1 session(s)."
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG011",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG011",
+      "step": "MessageSent",
+      "detail": "1 session(s)."
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG002",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG005",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG008",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG002",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG005",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG008",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:18:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG011",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:18:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG011",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:24:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG002",
+      "step": "Patched",
+      "detail": "4 item(s) installed."
+    },
+    {
+      "time": "2026-10-05T00:24:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG002",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:29:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG005",
+      "step": "Patched",
+      "detail": "4 item(s) installed."
+    },
+    {
+      "time": "2026-10-05T00:29:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG005",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:31:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG002",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:31:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG002",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:31:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG002",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:32:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG004",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:32:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG004",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:34:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG008",
+      "step": "Patched",
+      "detail": "4 item(s) installed."
+    },
+    {
+      "time": "2026-10-05T00:34:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG008",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:34:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG005",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:34:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG005",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:34:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG005",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:36:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG007",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:36:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG007",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:37:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG008",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:37:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG008",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:37:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG008",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:40:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG010",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:40:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG010",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:47:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG011",
+      "step": "Patched",
+      "detail": "4 item(s) installed."
+    },
+    {
+      "time": "2026-10-05T00:47:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG011",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:53:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG007",
+      "step": "Patched",
+      "detail": "4 item(s) installed."
+    },
+    {
+      "time": "2026-10-05T00:53:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG007",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:53:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG011",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:53:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG011",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:53:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG011",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:56:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG006",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T00:56:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG006",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:00:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG004",
+      "step": "Patched",
+      "detail": "4 item(s) installed."
+    },
+    {
+      "time": "2026-10-05T01:00:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG004",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:00:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG007",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:00:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG007",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:00:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG007",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:02:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG010",
+      "step": "Patched",
+      "detail": "4 item(s) installed."
+    },
+    {
+      "time": "2026-10-05T01:02:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG010",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:03:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG003",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:03:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG003",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:04:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG004",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:04:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG004",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:04:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG004",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:07:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG010",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:07:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG010",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:07:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG010",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG009",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:10:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG009",
+      "step": "NotDrained",
+      "detail": "1 session(s) still active after 60 minutes; returned to service unpatched."
+    },
+    {
+      "time": "2026-10-05T01:22:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG006",
+      "step": "Patched",
+      "detail": "2 item(s) installed."
+    },
+    {
+      "time": "2026-10-05T01:22:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG006",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:24:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG003",
+      "step": "Patched",
+      "detail": "2 item(s) installed."
+    },
+    {
+      "time": "2026-10-05T01:24:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG003",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:27:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG003",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:27:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG003",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:27:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG003",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:28:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG006",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:28:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG006",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:28:00Z",
+      "wave": 4,
+      "machine": "LISW11ENG006",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:28:00Z",
+      "wave": 4,
+      "machine": "",
+      "step": "WavePassed",
+      "detail": "9 completed, 0 failed, 1 not drained, 0 deferred."
+    },
+    {
+      "time": "2026-10-05T01:28:00Z",
+      "wave": 5,
+      "machine": "",
+      "step": "WaveStarted",
+      "detail": "Wave wave with 1 machines."
+    },
+    {
+      "time": "2026-10-05T01:28:00Z",
+      "wave": 5,
+      "machine": "LISW11ENG012",
+      "step": "MaintenanceOn",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:28:00Z",
+      "wave": 5,
+      "machine": "LISW11ENG012",
+      "step": "Drained",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:28:00Z",
+      "wave": 5,
+      "machine": "LISW11ENG012",
+      "step": "PatchStarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:48:00Z",
+      "wave": 5,
+      "machine": "LISW11ENG012",
+      "step": "Patched",
+      "detail": "2 item(s) installed."
+    },
+    {
+      "time": "2026-10-05T01:48:00Z",
+      "wave": 5,
+      "machine": "LISW11ENG012",
+      "step": "Restarted",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:55:00Z",
+      "wave": 5,
+      "machine": "LISW11ENG012",
+      "step": "Registered",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:55:00Z",
+      "wave": 5,
+      "machine": "LISW11ENG012",
+      "step": "MaintenanceOff",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:55:00Z",
+      "wave": 5,
+      "machine": "LISW11ENG012",
+      "step": "Completed",
+      "detail": ""
+    },
+    {
+      "time": "2026-10-05T01:55:00Z",
+      "wave": 5,
+      "machine": "",
+      "step": "WavePassed",
+      "detail": "1 completed, 0 failed, 0 not drained, 0 deferred."
+    },
+    {
+      "time": "2026-10-05T01:55:00Z",
+      "wave": 0,
+      "machine": "",
+      "step": "Finished",
+      "detail": "CompletedWithExceptions"
+    }
+  ]
+}

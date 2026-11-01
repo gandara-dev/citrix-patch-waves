@@ -1,0 +1,37 @@
+[
+  {
+    "id": "normal",
+    "title": "A regular night",
+    "description": "Every wave passes. Three machines still have a session after the 60-minute drain and go back into service unpatched.",
+    "file": "data/normal.json",
+    "outcome": "CompletedWithExceptions"
+  },
+  {
+    "id": "canary-failure",
+    "title": "Canary fails",
+    "description": "Patching fails on LISW11FIN001 in the canary wave, so the change stops before wave 2. The machine stays in maintenance mode.",
+    "file": "data/canary-failure.json",
+    "outcome": "Stopped"
+  },
+  {
+    "id": "wave-over-budget",
+    "title": "Wave over budget",
+    "description": "Two machines fail in wave 2 and the budget is 1, so waves 3 to 5 never start.",
+    "file": "data/wave-over-budget.json",
+    "outcome": "Stopped"
+  },
+  {
+    "id": "window-closes",
+    "title": "Window closes",
+    "description": "The window is only three hours long. The waves that do not fit are deferred and their machines stay in service.",
+    "file": "data/window-closes.json",
+    "outcome": "WindowClosed"
+  },
+  {
+    "id": "force-logoff",
+    "title": "Force logoff",
+    "description": "Sessions still open after the drain are logged off, so every machine is patched.",
+    "file": "data/force-logoff.json",
+    "outcome": "Completed"
+  }
+]

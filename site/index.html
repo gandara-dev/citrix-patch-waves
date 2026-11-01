@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Patch Waves Console</title>
+  <meta name="description" content="Replay a Citrix VDA patching change wave by wave: drain, patch, restart, registration, and the failure gate that stops the change.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <span class="product">Patch Waves</span>
+    <span class="change" id="change-line"></span>
+    <span class="grow"></span>
+    <label class="scenario">
+      <span>Scenario</span>
+      <select id="scenario"></select>
+    </label>
+    <label class="button" for="open-file">Open run.json</label>
+    <input type="file" id="open-file" accept="application/json,.json" class="sr-only">
+  </header>
+
+  <div class="playbar">
+    <button type="button" id="play" class="primary">Replay</button>
+    <select id="speed" aria-label="Replay speed">
+      <option value="60">1 min per second</option>
+      <option value="300" selected>5 min per second</option>
+      <option value="900">15 min per second</option>
+    </select>
+    <input type="range" id="clock" min="0" max="1" step="60000" aria-label="Time in the change window">
+    <output id="clock-label" for="clock"></output>
+    <span class="outcome" id="outcome" role="status"></span>
+  </div>
+  <p class="notice" id="notice" role="alert" hidden></p>
+
+  <div class="console">
+    <nav class="tree" aria-label="Change">
+      <ul id="tree"></ul>
+    </nav>
+
+    <main class="workspace">
+      <section class="list-pane" aria-labelledby="list-title">
+        <div class="pane-head">
+          <h1 id="list-title"></h1>
+          <span class="grow"></span>
+          <input type="search" id="list-filter" placeholder="Filter" aria-label="Filter the list" autocomplete="off">
+          <span class="count" id="list-count"></span>
+        </div>
+        <div class="grid-wrap" id="list"></div>
+      </section>
+
+      <section class="details-pane" aria-labelledby="details-title">
+        <div class="pane-head">
+          <h2 id="details-title"></h2>
+        </div>
+        <div class="details-body" id="details"></div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="statusbar">
+    <span id="status-left"></span>
+    <span class="grow"></span>
+    <a href="https://github.com/gandara-dev/citrix-patch-waves">Source</a>
+    <a href="https://github.com/gandara-dev/citrix-patch-waves/blob/main/docs/how-it-works.md">How it works</a>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

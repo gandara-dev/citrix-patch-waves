@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/gandara-dev/citrix-patch-waves/schemas/maintenance.schema.json",
+  "title": "Citrix Patch Waves maintenance file",
+  "description": "One maintenance change. Test-CpwMaintenance enforces these rules and the ones a schema cannot express: the window is at most 72 hours, the failure budget is smaller than the wave size, and Windows Update or at least one application must be enabled.",
+  "type": "object",
+  "required": ["schemaVersion", "name", "window", "target"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "name": { "type": "string", "minLength": 3, "maxLength": 120 },
+    "change": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,39}$" },
+    "window": {
+      "type": "object",
+      "required": ["start", "end"],
+      "properties": {
+        "start": { "type": "string", "format": "date-time" },
+        "end": { "type": "string", "format": "date-time" }
+      }
+    },
+    "target": {
+      "type": "object",
+      "anyOf": [
+        { "required": ["deliveryGroups"], "properties": { "deliveryGroups": { "minItems": 1 } } },
+        { "required": ["include"], "properties": { "include": { "minItems": 1 } } }
+      ],
+      "properties": {
+        "deliveryGroups": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 64 } },
+        "include": { "$ref": "#/$defs/machineList" },
+        "exclude": { "$ref": "#/$defs/machineList" }
+      }
+    },
+    "waves": {
+      "type": "object",
+      "properties": {
+        "canarySize": { "type": "integer", "minimum": 0, "maximum": 50, "default": 1 },
+        "waveSize": { "type": "integer", "minimum": 1, "maximum": 500, "default": 10 },
+        "concurrency": { "type": "integer", "minimum": 1, "maximum": 50, "default": 5 },
+        "failureBudget": { "type": "integer", "minimum": 0, "maximum": 500, "default": 0 },
+        "pollMinutes": { "type": "integer", "minimum": 1, "maximum": 30, "default": 1 }
+      }
+    },
+    "drain": {
+      "type": "object",
+      "properties": {
+        "timeoutMinutes": { "type": "integer", "minimum": 0, "maximum": 1440, "default": 60 },
+        "forceLogoff": { "type": "boolean", "default": false },
+        "message": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean", "default": false },
+            "title": { "type": "string", "minLength": 1, "maxLength": 64 },
+            "text": { "type": "string", "minLength": 1, "maxLength": 1000 }
+          },
+          "if": { "properties": { "enabled": { "const": true } }, "required": ["enabled"] },
+          "then": { "required": ["title", "text"] }
+        }
+      }
+    },
+    "patch": {
+      "type": "object",
+      "properties": {
+        "windowsUpdates": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean", "default": true },
+            "categories": {
+              "type": "array",
+              "items": { "enum": ["Critical Updates", "Security Updates", "Update Rollups", "Updates", "Definition Updates"] }
+            }
+          }
+        },
+        "software": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "wingetId"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "wingetId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9.+_-]{0,127}$" }
+            }
+          }
+        }
+      }
+    },
+    "reboot": {
+      "type": "object",
+      "properties": {
+        "timeoutMinutes": { "type": "integer", "minimum": 5, "maximum": 240, "default": 30 }
+      }
+    },
+    "verify": {
+      "type": "object",
+      "properties": {
+        "services": { "type": "array", "items": { "type": "string", "pattern": "^[A-Za-z0-9_.-]{1,80}$" } }
+      }
+    }
+  },
+  "$defs": {
+    "machineList": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^([A-Za-z0-9-]{1,15}\\\\)?[A-Za-z0-9-]{1,15}(\\.[A-Za-z0-9-]+)*$" }
+    }
+  }
+}
