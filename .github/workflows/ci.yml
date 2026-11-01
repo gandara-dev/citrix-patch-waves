@@ -24,6 +24,25 @@ jobs:
         shell: pwsh
         run: Invoke-Pester -Path ./tests -CI -Output Detailed
 
+  winrm:
+    name: Service checks over WinRM (real Windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install Pester
+        shell: pwsh
+        run: Install-Module Pester -RequiredVersion 5.7.1 -Scope CurrentUser -Force -SkipPublisherCheck
+      - name: Enable PowerShell remoting
+        shell: pwsh
+        run: |
+          Enable-PSRemoting -Force -SkipNetworkProfileCheck
+          Test-WSMan -ComputerName localhost
+      - name: Run the WinRM tests
+        shell: pwsh
+        run: |
+          $result = Invoke-Pester -Path ./tests/WinRM.Tests.ps1 -CI -Output Detailed -PassThru
+          if ($result.PassedCount -eq 0) { throw 'The WinRM tests were skipped; remoting is not available on the runner.' }
+
   web-tests:
     name: Console tests
     runs-on: ubuntu-latest
@@ -49,12 +68,14 @@ jobs:
           $findings = @(Invoke-ScriptAnalyzer -Path . -Recurse -Severity Warning,Error)
           $findings | Format-Table -AutoSize
           if ($findings.Count -gt 0) { throw 'PSScriptAnalyzer reported findings.' }
-      - name: Validate the sample maintenance file against the schema
+      - name: Validate the sample maintenance files against the schema
         shell: pwsh
         run: |
           $schema = Get-Content ./schemas/maintenance.schema.json -Raw
-          if (-not (Get-Content ./samples/lisbon-october.maintenance.json -Raw | Test-Json -Schema $schema)) {
-            throw 'The sample does not match schemas/maintenance.schema.json.'
+          foreach ($sample in Get-ChildItem ./samples -Filter *.maintenance.json) {
+            if (-not (Get-Content $sample.FullName -Raw | Test-Json -Schema $schema)) {
+              throw "$($sample.Name) does not match schemas/maintenance.schema.json."
+            }
           }
 
   end-to-end:

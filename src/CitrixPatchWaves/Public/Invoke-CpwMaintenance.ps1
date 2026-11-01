@@ -25,9 +25,16 @@ function Invoke-CpwMaintenance {
     machines than its failure budget, no further wave starts. No wave and no
     machine starts patching after the window ends.
 
+    A change with nothing to install (Windows Update off and no application)
+    is a rolling restart: machines go from drained straight to the restart.
+
+    When a provider call fails for one machine, that machine fails with the
+    error and keeps its maintenance mode; the other machines carry on.
+
     Against a real site the change only runs with -Execute; the simulation
-    always runs. This version's Citrix provider is read-only, so today only the
-    simulation can run a change.
+    always runs. A provider that cannot install updates (the Citrix provider
+    in this version) only runs restart-only changes, and the engine refuses
+    any other change before touching a machine.
 
     .EXAMPLE
     $run = Invoke-CpwMaintenance -Maintenance $maintenance -Provider (New-CpwSimulationProvider -StartTime $maintenance.WindowStart)
@@ -50,6 +57,10 @@ function Invoke-CpwMaintenance {
 
     if (-not $Provider.IsSimulation -and -not $Execute) {
         throw 'Nothing was changed: against a real site the change only runs with -Execute. Review the output of Get-CpwPlan first.'
+    }
+    $patching = $Maintenance.WindowsUpdates -or @($Maintenance.Software).Count -gt 0
+    if ($patching -and -not $Provider.CanPatch) {
+        throw "Nothing was changed: $($Provider.Name) cannot install updates in this version. Turn patch.windowsUpdates off and leave patch.software empty for a restart-only change, or run the change in the simulation."
     }
     if (-not $Plan) { $Plan = Get-CpwPlan -Maintenance $Maintenance -Provider $Provider }
 
@@ -111,6 +122,14 @@ function Invoke-CpwMaintenance {
         & $log $Record.name $Wave $FinalState $Detail
     }
 
+    # A provider error fails only the machine it happened on. The machine
+    # keeps whatever maintenance mode it had, so a drained machine stays out
+    # of service for investigation.
+    $providerFailed = {
+        param($Record, [int]$Wave, $ErrorRecord)
+        & $finish $Record 'Failed' "The provider failed while the machine was $($Record.state): $($ErrorRecord.Exception.Message)" $Wave
+    }
+
     $waves = [System.Collections.Generic.List[object]]::new()
     $stopReason = $null
     $windowClosed = $false
@@ -156,16 +175,19 @@ function Invoke-CpwMaintenance {
 
         # Drain: maintenance mode on for the whole wave, message the users.
         foreach ($record in $waveRecords) {
-            & $setMaintenance $record $true $number
-            $record.state = 'Draining'
-            $record.drainStartedAt = Format-CpwDate (& $clock)
-            $sessions = [int](& $Provider.GetSessionCount $state $record.name)
-            $record.sessionsAtDrain = $sessions
-            if ($sessions -gt 0 -and $Maintenance.MessageEnabled) {
-                & $Provider.SendMessage $state $record.name $Maintenance.MessageTitle $Maintenance.MessageText
-                $record.messageSent = $true
-                & $log $record.name $number 'MessageSent' "$sessions session(s)."
+            try {
+                $record.state = 'Draining'
+                & $setMaintenance $record $true $number
+                $record.drainStartedAt = Format-CpwDate (& $clock)
+                $sessions = [int](& $Provider.GetSessionCount $state $record.name)
+                $record.sessionsAtDrain = $sessions
+                if ($sessions -gt 0 -and $Maintenance.MessageEnabled) {
+                    & $Provider.SendMessage $state $record.name $Maintenance.MessageTitle $Maintenance.MessageText
+                    $record.messageSent = $true
+                    & $log $record.name $number 'MessageSent' "$sessions session(s)."
+                }
             }
+            catch { & $providerFailed $record $number $_ }
         }
 
         $guard = 0
@@ -174,99 +196,126 @@ function Invoke-CpwMaintenance {
             $now = & $clock
 
             foreach ($record in @($waveRecords | Where-Object state -EQ 'Draining')) {
-                $sessions = [int](& $Provider.GetSessionCount $state $record.name)
-                $waited = ($now - (ConvertTo-CpwDate $record.drainStartedAt)).TotalMinutes
-                if ($sessions -gt 0 -and $waited -ge $Maintenance.DrainTimeoutMinutes) {
-                    if ($Maintenance.ForceLogoff -and -not $record.forcedLogoff) {
-                        & $Provider.LogoffSessions $state $record.name
-                        $record.forcedLogoff = $true
-                        $record.forcedLogoffAt = Format-CpwDate $now
-                        & $log $record.name $number 'ForcedLogoff' "$sessions session(s) still active after $([int]$waited) minutes."
-                        $sessions = [int](& $Provider.GetSessionCount $state $record.name)
-                    }
-                    elseif ($record.forcedLogoff) {
-                        if (($now - (ConvertTo-CpwDate $record.forcedLogoffAt)).TotalMinutes -ge $script:LogoffGraceMinutes) {
-                            & $setMaintenance $record $false $number
-                            & $finish $record 'NotDrained' "$sessions session(s) still active $($script:LogoffGraceMinutes) minutes after a forced logoff; returned to service unpatched." $number
+                try {
+                    $sessions = [int](& $Provider.GetSessionCount $state $record.name)
+                    $waited = ($now - (ConvertTo-CpwDate $record.drainStartedAt)).TotalMinutes
+                    if ($sessions -gt 0 -and $waited -ge $Maintenance.DrainTimeoutMinutes) {
+                        if ($Maintenance.ForceLogoff -and -not $record.forcedLogoff) {
+                            & $Provider.LogoffSessions $state $record.name
+                            $record.forcedLogoff = $true
+                            $record.forcedLogoffAt = Format-CpwDate $now
+                            & $log $record.name $number 'ForcedLogoff' "$sessions session(s) still active after $([int]$waited) minutes."
+                            $sessions = [int](& $Provider.GetSessionCount $state $record.name)
                         }
-                        continue
+                        elseif ($record.forcedLogoff) {
+                            if (($now - (ConvertTo-CpwDate $record.forcedLogoffAt)).TotalMinutes -ge $script:LogoffGraceMinutes) {
+                                & $setMaintenance $record $false $number
+                                & $finish $record 'NotDrained' "$sessions session(s) still active $($script:LogoffGraceMinutes) minutes after a forced logoff; returned to service unpatched." $number
+                            }
+                            continue
+                        }
+                        else {
+                            & $setMaintenance $record $false $number
+                            & $finish $record 'NotDrained' "$sessions session(s) still active after $($Maintenance.DrainTimeoutMinutes) minutes; returned to service unpatched." $number
+                            continue
+                        }
                     }
-                    else {
-                        & $setMaintenance $record $false $number
-                        & $finish $record 'NotDrained' "$sessions session(s) still active after $($Maintenance.DrainTimeoutMinutes) minutes; returned to service unpatched." $number
-                        continue
+                    if ($sessions -eq 0) {
+                        $record.state = 'Ready'
+                        $record.drainedAt = Format-CpwDate $now
+                        & $log $record.name $number 'Drained' $null
                     }
                 }
-                if ($sessions -eq 0) {
-                    $record.state = 'Ready'
-                    $record.drainedAt = Format-CpwDate $now
-                    & $log $record.name $number 'Drained' $null
-                }
+                catch { & $providerFailed $record $number $_ }
             }
 
             $active = @($waveRecords | Where-Object { $_.state -in 'Patching', 'Restarting', 'Verifying' }).Count
             foreach ($record in @($waveRecords | Where-Object state -EQ 'Ready')) {
                 if ($now -ge $Maintenance.WindowEnd) {
                     $windowClosed = $true
-                    & $setMaintenance $record $false $number
-                    & $finish $record 'Deferred' 'The window closed before patching started; returned to service unpatched.' $number
+                    try {
+                        & $setMaintenance $record $false $number
+                        & $finish $record 'Deferred' "The window closed before $(if ($patching) { 'patching' } else { 'the restart' }) started; returned to service unpatched." $number
+                    }
+                    catch { & $providerFailed $record $number $_ }
                     continue
                 }
                 if ($active -ge $Maintenance.Concurrency) { break }
-                & $Provider.StartPatch $state $record.name
-                $record.state = 'Patching'
-                $record.patchStartedAt = Format-CpwDate $now
-                & $log $record.name $number 'PatchStarted' $null
+                try {
+                    if ($patching) {
+                        & $Provider.StartPatch $state $record.name
+                        $record.state = 'Patching'
+                        $record.patchStartedAt = Format-CpwDate $now
+                        & $log $record.name $number 'PatchStarted' $null
+                    }
+                    else {
+                        # A restart-only change: nothing to install.
+                        & $Provider.StartRestart $state $record.name
+                        $record.state = 'Restarting'
+                        $record.restartedAt = Format-CpwDate $now
+                        & $log $record.name $number 'Restarted' $null
+                    }
+                }
+                catch { & $providerFailed $record $number $_ }
                 $active++
             }
 
             foreach ($record in @($waveRecords | Where-Object state -EQ 'Patching')) {
-                $status = & $Provider.GetPatchStatus $state $record.name $Maintenance
-                if ($status.Status -eq 'Succeeded') {
-                    $record.installed = @($status.Installed)
-                    $record.patchFinishedAt = Format-CpwDate $now
-                    & $log $record.name $number 'Patched' "$(@($status.Installed).Count) item(s) installed."
-                    & $Provider.StartRestart $state $record.name
-                    $record.state = 'Restarting'
-                    $record.restartedAt = Format-CpwDate $now
-                    & $log $record.name $number 'Restarted' $null
+                try {
+                    $status = & $Provider.GetPatchStatus $state $record.name $Maintenance
+                    if ($status.Status -eq 'Succeeded') {
+                        $record.installed = @($status.Installed)
+                        $record.patchFinishedAt = Format-CpwDate $now
+                        & $log $record.name $number 'Patched' "$(@($status.Installed).Count) item(s) installed."
+                        $record.state = 'Restarting'
+                        & $Provider.StartRestart $state $record.name
+                        $record.restartedAt = Format-CpwDate $now
+                        & $log $record.name $number 'Restarted' $null
+                    }
+                    elseif ($status.Status -eq 'Failed') {
+                        $record.patchFinishedAt = Format-CpwDate $now
+                        & $finish $record 'Failed' "Patching failed: $($status.Detail)" $number
+                    }
+                    elseif (($now - (ConvertTo-CpwDate $record.patchStartedAt)).TotalMinutes -ge $script:PatchTimeoutMinutes) {
+                        & $finish $record 'Failed' "Patching did not finish within $($script:PatchTimeoutMinutes) minutes." $number
+                    }
                 }
-                elseif ($status.Status -eq 'Failed') {
-                    $record.patchFinishedAt = Format-CpwDate $now
-                    & $finish $record 'Failed' "Patching failed: $($status.Detail)" $number
-                }
-                elseif (($now - (ConvertTo-CpwDate $record.patchStartedAt)).TotalMinutes -ge $script:PatchTimeoutMinutes) {
-                    & $finish $record 'Failed' "Patching did not finish within $($script:PatchTimeoutMinutes) minutes." $number
-                }
+                catch { & $providerFailed $record $number $_ }
             }
 
             foreach ($record in @($waveRecords | Where-Object state -EQ 'Restarting')) {
-                $registration = [string](& $Provider.GetRegistration $state $record.name)
-                if ($registration -eq 'Registered') {
-                    $record.registeredAt = Format-CpwDate $now
-                    $record.state = 'Verifying'
-                    & $log $record.name $number 'Registered' $null
+                try {
+                    $registration = [string](& $Provider.GetRegistration $state $record.name)
+                    if ($registration -eq 'Registered') {
+                        $record.registeredAt = Format-CpwDate $now
+                        $record.state = 'Verifying'
+                        & $log $record.name $number 'Registered' $null
+                    }
+                    elseif (($now - (ConvertTo-CpwDate $record.restartedAt)).TotalMinutes -ge $Maintenance.RebootTimeoutMinutes) {
+                        & $finish $record 'Failed' "Did not register with the Delivery Controller within $($Maintenance.RebootTimeoutMinutes) minutes of the restart ($registration)." $number
+                    }
                 }
-                elseif (($now - (ConvertTo-CpwDate $record.restartedAt)).TotalMinutes -ge $Maintenance.RebootTimeoutMinutes) {
-                    & $finish $record 'Failed' "Did not register with the Delivery Controller within $($Maintenance.RebootTimeoutMinutes) minutes of the restart ($registration)." $number
-                }
+                catch { & $providerFailed $record $number $_ }
             }
 
             foreach ($record in @($waveRecords | Where-Object state -EQ 'Verifying')) {
-                $services = & $Provider.GetServiceStatus $state $record.name $Maintenance.Services
-                $stopped = @($services.Keys | Where-Object { $services[$_] -ne 'Running' })
-                $remaining = if ($Maintenance.WindowsUpdates) { [int](& $Provider.GetApplicableUpdates $state $record.name $Maintenance) } else { 0 }
-                if ($stopped.Count -gt 0) {
-                    $list = ($stopped | ForEach-Object { "$_ is $($services[$_])" }) -join ', '
-                    & $finish $record 'Failed' "Registered, but $list after the restart." $number
+                try {
+                    $services = & $Provider.GetServiceStatus $state $record.name $Maintenance.Services
+                    $stopped = @($services.Keys | Where-Object { $services[$_] -ne 'Running' })
+                    $remaining = if ($Maintenance.WindowsUpdates) { [int](& $Provider.GetApplicableUpdates $state $record.name $Maintenance) } else { 0 }
+                    if ($stopped.Count -gt 0) {
+                        $list = ($stopped | ForEach-Object { "$_ is $($services[$_])" }) -join ', '
+                        & $finish $record 'Failed' "Registered, but $list after the restart." $number
+                    }
+                    elseif ($remaining -gt 0) {
+                        & $finish $record 'Failed' "$remaining requested update(s) still applicable after the restart." $number
+                    }
+                    else {
+                        & $setMaintenance $record $false $number
+                        & $finish $record 'Completed' $null $number
+                    }
                 }
-                elseif ($remaining -gt 0) {
-                    & $finish $record 'Failed' "$remaining requested update(s) still applicable after the restart." $number
-                }
-                else {
-                    & $setMaintenance $record $false $number
-                    & $finish $record 'Completed' $null $number
-                }
+                catch { & $providerFailed $record $number $_ }
             }
 
             if (@($waveRecords | Where-Object { $script:TerminalStates -notcontains $_.state }).Count -gt 0) {

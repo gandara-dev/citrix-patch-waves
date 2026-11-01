@@ -18,14 +18,19 @@ with one of the named scenarios:
   force-logoff      drain.forceLogoff is on: sessions still open after the
                     drain are logged off and every machine is patched.
 
-With -AdminAddress the plan is read from a real Citrix site. This version
-never changes a real site: only -PlanOnly is accepted there.
+With -AdminAddress the plan is read from a real Citrix site. -PlanOnly writes
+the plan and changes nothing; -Execute runs the change. In this version a real
+site only runs restart-only changes (patch.windowsUpdates off and no
+patch.software), and anything else is refused before a machine is touched.
 
 .EXAMPLE
 ./scripts/Invoke-PatchWaves.ps1 -Simulation -Scenario wave-over-budget -OutputDirectory ./artifacts
 
 .EXAMPLE
 ./scripts/Invoke-PatchWaves.ps1 -MaintenancePath ./maintenance.json -AdminAddress ddc01.corp.example.test -PlanOnly
+
+.EXAMPLE
+./scripts/Invoke-PatchWaves.ps1 -MaintenancePath ./restart.json -AdminAddress ddc01.corp.example.test -Execute
 #>
 [CmdletBinding(DefaultParameterSetName = 'Simulation')]
 param(
@@ -41,6 +46,12 @@ param(
     [Parameter(Mandatory, ParameterSetName = 'Site')]
     [string]$AdminAddress,
 
+    [Parameter(ParameterSetName = 'Site')]
+    [pscredential]$Credential,
+
+    [Parameter(ParameterSetName = 'Site')]
+    [switch]$Execute,
+
     [switch]$PlanOnly,
 
     [string]$OutputDirectory = './artifacts'
@@ -53,8 +64,10 @@ $maintenance = Import-CpwMaintenance -Path $MaintenancePath
 # -Simulation is the default; the switch exists so commands can say so explicitly.
 $useSimulation = $Simulation -or $PSCmdlet.ParameterSetName -eq 'Simulation'
 if (-not $useSimulation) {
-    if (-not $PlanOnly) { throw 'This version plans against a real site but does not change it. Add -PlanOnly.' }
-    $provider = New-CpwCitrixProvider -AdminAddress $AdminAddress
+    if ([bool]$PlanOnly -eq [bool]$Execute) { throw 'Against a real site, add -PlanOnly to review the plan or -Execute to run the change.' }
+    $providerParameters = @{ AdminAddress = $AdminAddress }
+    if ($Credential) { $providerParameters.Credential = $Credential }
+    $provider = New-CpwCitrixProvider @providerParameters
 }
 else {
     $failure = @{}
@@ -82,7 +95,7 @@ if ($PlanOnly) {
     return
 }
 
-$run = Invoke-CpwMaintenance -Maintenance $maintenance -Provider $provider -Plan $plan -JournalPath (Join-Path $OutputDirectory 'journal.jsonl')
+$run = Invoke-CpwMaintenance -Maintenance $maintenance -Provider $provider -Plan $plan -Execute:$Execute -JournalPath (Join-Path $OutputDirectory 'journal.jsonl')
 $files = Export-CpwChangeRecord -Run $run -OutputDirectory $OutputDirectory
 [pscustomobject]@{
     Outcome = $run.outcome

@@ -21,8 +21,12 @@ Invoke-Pester -Path ./tests -CI -Output Detailed
   it), concurrency, patch failure, missing registration, stopped service,
   updates still applicable, the failure gate, the window, and the journal;
 - the change record files;
-- the read-only Citrix provider against a mocked `Get-BrokerMachine`, and the
-  refusal to change a real site;
+- the Citrix provider against a mocked Broker SDK and WinRM: planning, a
+  restart-only change from drain to service check, hosting power actions for
+  MCS and WinRM restarts for Remote PC Access, registration that only counts
+  after the machine was seen going down, a refused restart, and the refusal
+  to start a change that installs updates;
+- a provider error on one machine, which fails that machine only;
 - the demo data: `site/data` must match what `scripts/Update-DemoData.ps1`
   produces from the current engine.
 
@@ -39,6 +43,10 @@ $provider = New-CpwSimulationProvider -StartTime $maintenance.WindowStart -Failu
 
 Failure kinds: `PatchFails`, `NoRegistration`, `ServiceStopped`,
 `UpdatesRemain`, `SessionsNeverEnd`, `LogoffFails`.
+
+`tests/WinRM.Tests.ps1` runs the provider's service checks over real WinRM
+against the local machine. It is skipped where WinRM is not enabled; CI
+enables PowerShell remoting on a Windows runner and requires it to pass.
 
 ## Console
 
@@ -67,6 +75,6 @@ Pester fails until the files in `site/data` are regenerated.
 Invoke-ScriptAnalyzer -Path . -Recurse -Severity Warning,Error
 ```
 
-CI also validates `samples/lisbon-october.maintenance.json` against
+CI also validates every file in `samples/` against
 `schemas/maintenance.schema.json` and runs `Invoke-PatchWaves.ps1` for every
 scenario, checking the outcome of each.

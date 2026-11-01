@@ -1,22 +1,23 @@
 # Roadmap
 
-Version 0.1.0 has the whole decision logic (plan, waves, drain, gate, window,
-record) and proves it on a simulated site. The Citrix provider only reads.
-Real execution is added one provider action at a time, each with its own test
-against real Windows, and nothing below is promised until it is released.
+Version 0.1.0 had the whole decision logic (plan, waves, drain, gate, window,
+record) and proved it on a simulated site. Real execution is added one
+provider action at a time, each with its own test, and nothing below is
+promised until it is released.
 
-## 0.2.0: change a real site
+## 0.2.0: restart a real site (released)
 
 - Citrix actions through the Broker SDK: `Set-BrokerMachineMaintenanceMode`,
-  `Send-BrokerSessionMessage`, `Get-BrokerSession` for the session count, and
-  `Stop-BrokerSession` for `forceLogoff`; registration from
-  `Get-BrokerMachine`.
-- Restart through `New-BrokerHostingPowerAction` when the machine has a hosting
-  connection, `Restart-Computer` over WinRM otherwise (Remote PC Access).
-- Service checks over WinRM.
-- `Invoke-CpwMaintenance -Execute` against the Citrix provider, with the exact
-  Citrix role permissions listed in the docs. A Read Only Administrator stops
-  being enough from this version on.
+  `Send-BrokerSessionMessage`, `Get-BrokerSession` for the session count,
+  `Stop-BrokerSession` for `forceLogoff`, and registration from
+  `Get-BrokerMachine`, counted only after the machine was seen going down.
+- Restart through `New-BrokerHostingPowerAction` when the machine has a
+  hosting connection, `shutdown.exe` over WinRM otherwise (Remote PC Access).
+- Service checks over WinRM, tested against a real Windows runner.
+- Restart-only changes (`Invoke-CpwMaintenance -Execute`) on a real site, and
+  the permissions in [release-verification.md](release-verification.md).
+- A provider error fails only the machine it happened on.
+- Still open: acceptance on a live site, which this repository cannot run.
 
 ## 0.3.0: patch in place
 

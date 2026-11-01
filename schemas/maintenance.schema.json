@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/gandara-dev/citrix-patch-waves/schemas/maintenance.schema.json",
   "title": "Citrix Patch Waves maintenance file",
-  "description": "One maintenance change. Test-CpwMaintenance enforces these rules and the ones a schema cannot express: the window is at most 72 hours, the failure budget is smaller than the wave size, and Windows Update or at least one application must be enabled.",
+  "description": "One maintenance change. Test-CpwMaintenance enforces these rules and the ones a schema cannot express: the window is at most 72 hours and the failure budget is smaller than the wave size. Windows Update off with no application is a restart-only change.",
   "type": "object",
   "required": ["schemaVersion", "name", "window", "target"],
   "properties": {

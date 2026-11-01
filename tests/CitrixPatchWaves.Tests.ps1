@@ -2,9 +2,14 @@
 param()
 
 BeforeAll {
-    # A stub lets the module resolve the Citrix command on a machine without the
+    # Stubs let the module resolve the Citrix commands on a machine without the
     # SDK; Pester mocks provide every result.
-    function global:Get-BrokerMachine { [CmdletBinding()] param([string]$AdminAddress, [int]$MaxRecordCount) [void]$AdminAddress; [void]$MaxRecordCount }
+    function global:Get-BrokerMachine { [CmdletBinding()] param([string]$AdminAddress, [int]$MaxRecordCount, [string]$MachineName) [void]$AdminAddress; [void]$MaxRecordCount; [void]$MachineName }
+    function global:Get-BrokerSession { [CmdletBinding()] param([string]$AdminAddress, [string]$MachineName, [int]$MaxRecordCount) [void]$AdminAddress; [void]$MachineName; [void]$MaxRecordCount }
+    function global:Set-BrokerMachineMaintenanceMode { [CmdletBinding()] param([string]$AdminAddress, [object[]]$InputObject, [bool]$MaintenanceMode) [void]$AdminAddress; [void]$InputObject; [void]$MaintenanceMode }
+    function global:Send-BrokerSessionMessage { [CmdletBinding()] param([string]$AdminAddress, [object[]]$InputObject, [string]$MessageStyle, [string]$Title, [string]$Text) [void]$AdminAddress; [void]$InputObject; [void]$MessageStyle; [void]$Title; [void]$Text }
+    function global:Stop-BrokerSession { [CmdletBinding()] param([string]$AdminAddress, [object[]]$InputObject) [void]$AdminAddress; [void]$InputObject }
+    function global:New-BrokerHostingPowerAction { [CmdletBinding()] param([string]$AdminAddress, [string]$MachineName, [string]$Action) [void]$AdminAddress; [void]$MachineName; [void]$Action }
 
     $repositoryRoot = Split-Path -Parent $PSScriptRoot
     Import-Module (Join-Path $repositoryRoot 'src/CitrixPatchWaves/CitrixPatchWaves.psd1') -Force
@@ -26,8 +31,8 @@ BeforeAll {
 }
 
 Describe 'Module' {
-    It 'has a valid manifest at version 0.1.0' {
-        (Test-ModuleManifest (Join-Path $repositoryRoot 'src/CitrixPatchWaves/CitrixPatchWaves.psd1')).Version | Should -Be '0.1.0'
+    It 'has a valid manifest at version 0.2.0' {
+        (Test-ModuleManifest (Join-Path $repositoryRoot 'src/CitrixPatchWaves/CitrixPatchWaves.psd1')).Version | Should -Be '0.2.0'
     }
 }
 
@@ -48,13 +53,19 @@ Describe 'Test-CpwMaintenance' {
         @{ Case = 'the message has no text'; Path = 'drain.message.text'; Change = { param($d) $d.drain.message.text = '' } }
         @{ Case = 'the update category is unknown'; Path = 'patch.windowsUpdates.categories[0]'; Change = { param($d) $d.patch.windowsUpdates.categories = @('Drivers') } }
         @{ Case = 'an application is listed twice'; Path = 'patch.software[1].wingetId'; Change = { param($d) $d.patch.software[1].wingetId = 'google.chrome' } }
-        @{ Case = 'there is nothing to patch'; Path = 'patch'; Change = { param($d) $d.patch.windowsUpdates.enabled = $false; $d.patch.software = @() } }
         @{ Case = 'the reboot timeout is too short'; Path = 'reboot.timeoutMinutes'; Change = { param($d) $d.reboot.timeoutMinutes = 1 } }
         @{ Case = 'a service name is invalid'; Path = 'verify.services[0]'; Change = { param($d) $d.verify.services = @('Broker Agent') } }
     ) {
         $definition = Get-TestDefinition
         & $Change $definition
         @(Test-CpwMaintenance -InputObject $definition).Path | Should -Contain $Path
+    }
+
+    It 'accepts a restart-only change' {
+        $definition = Get-TestDefinition
+        $definition.patch.windowsUpdates.enabled = $false
+        $definition.patch.software = @()
+        @(Test-CpwMaintenance -InputObject $definition) | Should -HaveCount 0
     }
 
     It 'rejects something that is not an object' {
@@ -284,6 +295,32 @@ Describe 'Invoke-CpwMaintenance' {
         { Invoke-CpwMaintenance -Maintenance $maintenance -Provider $provider } | Should -Throw 'The maintenance window starts at 2026-10-04T21:00:00Z*'
     }
 
+    It 'restarts without patching when there is nothing to install' {
+        $run = Invoke-TestRun -Change { param($d) $d.patch.windowsUpdates.enabled = $false; $d.patch.software = @() }
+        $run.outcome | Should -Be 'CompletedWithExceptions'
+        $run.totals.completed | Should -Be 30
+        @($run.events | Where-Object step -In 'PatchStarted', 'Patched') | Should -HaveCount 0
+        @($run.machines | Where-Object state -EQ 'Completed' | Where-Object { $_.restartedAt -and -not $_.patchStartedAt }) | Should -HaveCount 30
+    }
+
+    It 'fails only the machine whose provider call throws and keeps it in maintenance mode' {
+        $definition = Get-TestDefinition
+        $maintenance = Import-CpwMaintenance -InputObject $definition
+        $provider = New-CpwSimulationProvider -StartTime $maintenance.WindowStart
+        $restart = $provider.StartRestart
+        $provider.StartRestart = {
+            param($State, [string]$Name)
+            if ($Name -eq 'LISW11FIN004') { throw 'The hypervisor did not accept the power action.' }
+            & $restart $State $Name
+        }.GetNewClosure()
+        $run = Invoke-CpwMaintenance -Maintenance $maintenance -Provider $provider
+        $machine = Get-Machine $run 'LISW11FIN004'
+        $machine.state | Should -Be 'Failed'
+        $machine.inMaintenanceMode | Should -BeTrue
+        $machine.detail | Should -Be 'The provider failed while the machine was Restarting: The hypervisor did not accept the power action.'
+        $run.totals.completed | Should -BeGreaterThan 20
+    }
+
     It 'rejects unknown failures and machines in the simulation' {
         { New-CpwSimulationProvider -Failure @{ LISW11FIN001 = 'Meteor' } } | Should -Throw "Unknown failure 'Meteor'*"
         { New-CpwSimulationProvider -Failure @{ NOPE001 = 'PatchFails' } } | Should -Throw '*no machine named NOPE001*'
@@ -292,33 +329,152 @@ Describe 'Invoke-CpwMaintenance' {
 
 Describe 'Citrix provider' {
     BeforeAll {
-        Mock -ModuleName CitrixPatchWaves Get-BrokerMachine {
-            [pscustomobject]@{ MachineName = 'CORP\LISW11FIN001'; DNSName = 'lisw11fin001.corp.example.test'; DesktopGroupName = 'DG-LIS-W11-DED-FINANCE'; CatalogName = 'MC-LIS-W11-DED-FINANCE'; ProvisioningType = 'MCS'; AllocationType = 'Static'; SessionSupport = 'SingleSession'; InMaintenanceMode = $false; RegistrationState = 'Registered'; PowerState = 'On'; SessionCount = 1 }
-            [pscustomobject]@{ MachineName = 'CORP\LISW11FIN002'; DNSName = 'lisw11fin002.corp.example.test'; DesktopGroupName = 'DG-LIS-W11-DED-FINANCE'; CatalogName = 'MC-LIS-W11-DED-FINANCE'; ProvisioningType = 'PVS'; AllocationType = 'Static'; SessionSupport = 'SingleSession'; InMaintenanceMode = $false; RegistrationState = 'Registered'; PowerState = 'On'; SessionCount = 0 }
+        # A two-machine fake site behind mocks of the Broker SDK and WinRM:
+        # LISW11FIN001 is an MCS desktop on a hosting connection with one
+        # session; LISW11ENG001 is a Remote PC Access machine with none.
+        # LISW11FIN002 is streamed by PVS and is left out of every plan.
+        function Initialize-TestSite {
+            $script:site = @{
+                'CORP\LISW11FIN001' = @{ Group = 'DG-LIS-W11-DED-FINANCE'; Provisioning = 'MCS'; Hosting = 'HC-LIS-VSPHERE'; Sessions = 1; Maintenance = $false; Restarted = $false; Polls = 0 }
+                'CORP\LISW11FIN002' = @{ Group = 'DG-LIS-W11-DED-FINANCE'; Provisioning = 'PVS'; Hosting = 'HC-LIS-VSPHERE'; Sessions = 0; Maintenance = $false; Restarted = $false; Polls = 0 }
+                'CORP\LISW11ENG001' = @{ Group = 'DG-LIS-W11-RPC-ENGINEERING'; Provisioning = 'Manual'; Hosting = $null; Sessions = 0; Maintenance = $false; Restarted = $false; Polls = 0 }
+            }
         }
-        $maintenance = Import-CpwMaintenance -Path $samplePath
-        $provider = New-CpwCitrixProvider -AdminAddress 'ddc01.corp.example.test'
+        function Get-TestSiteMachine {
+            param([string]$Name)
+            $machine = $script:site[$Name]
+            # A restarted machine is unregistered on the first poll after the
+            # restart and registered again on the next one.
+            $registration = 'Registered'
+            if ($machine.Restarted -and $machine.Polls++ -eq 0) { $registration = 'Unregistered' }
+            $short = ($Name -split '\\')[-1]
+            [pscustomobject]@{
+                MachineName = $Name; DNSName = "$($short.ToLowerInvariant()).corp.example.test"; DesktopGroupName = $machine.Group
+                CatalogName = $machine.Group -replace '^DG-', 'MC-'; ProvisioningType = $machine.Provisioning; AllocationType = 'Static'
+                SessionSupport = 'SingleSession'; InMaintenanceMode = $machine.Maintenance; RegistrationState = $registration; PowerState = 'On'
+                SessionCount = $machine.Sessions; HypervisorConnectionName = $machine.Hosting; LastDeregistrationTime = $null
+            }
+        }
+        function Get-RestartDefinition {
+            $definition = Get-TestDefinition
+            $definition.window.start = '2026-10-04T21:00:00Z'
+            $definition.target.exclude = @()
+            $definition.waves.canarySize = 1
+            $definition.waves.waveSize = 2
+            $definition.drain.timeoutMinutes = 0
+            $definition.drain.forceLogoff = $true
+            $definition.patch.windowsUpdates.enabled = $false
+            $definition.patch.software = @()
+            $definition
+        }
+        function Get-TestCitrixProvider {
+            $provider = New-CpwCitrixProvider -AdminAddress 'ddc01.corp.example.test'
+            # A virtual clock, so a test never sleeps.
+            $provider.State.Clock = [DateTimeOffset]::new(2026, 10, 4, 21, 0, 0, [TimeSpan]::Zero)
+            $provider.Now = { param($State) $State.Clock }
+            $provider.Wait = { param($State, [int]$Minutes) $State.Clock = $State.Clock.AddMinutes($Minutes) }
+            $provider
+        }
+
+        Mock -ModuleName CitrixPatchWaves Get-BrokerMachine { foreach ($name in @($script:site.Keys | Sort-Object)) { Get-TestSiteMachine $name } }
+        Mock -ModuleName CitrixPatchWaves Get-BrokerMachine { Get-TestSiteMachine $MachineName } -ParameterFilter { $MachineName }
+        Mock -ModuleName CitrixPatchWaves Get-BrokerSession {
+            $machine = $script:site[$MachineName]
+            for ($i = 1; $i -le $machine.Sessions; $i++) { [pscustomobject]@{ MachineName = $MachineName; Uid = $i } }
+        }
+        Mock -ModuleName CitrixPatchWaves Set-BrokerMachineMaintenanceMode { $script:site[[string]$InputObject[0]].Maintenance = $MaintenanceMode }
+        Mock -ModuleName CitrixPatchWaves Send-BrokerSessionMessage { }
+        Mock -ModuleName CitrixPatchWaves Stop-BrokerSession { $script:site[$InputObject[0].MachineName].Sessions = 0 }
+        Mock -ModuleName CitrixPatchWaves New-BrokerHostingPowerAction { $script:site[$MachineName].Restarted = $true }
+        Mock -ModuleName CitrixPatchWaves Invoke-Command {
+            $name = 'CORP\' + ($ComputerName -split '\.')[0].ToUpperInvariant()
+            $script:site[$name].Restarted = $true
+        } -ParameterFilter { $ScriptBlock.ToString() -match 'shutdown\.exe' }
+        Mock -ModuleName CitrixPatchWaves Invoke-Command {
+            foreach ($service in $ArgumentList[0]) { [pscustomobject]@{ Name = $service; Status = 'Running' } }
+        } -ParameterFilter { $ScriptBlock.ToString() -match 'Get-Service' }
     }
 
-    It 'plans against the site read-only' {
-        $plan = Get-CpwPlan -Maintenance $maintenance -Provider $provider
-        $plan.machines.name | Should -Be @('LISW11FIN001')
+    BeforeEach { Initialize-TestSite }
+
+    It 'plans against the site with Get-BrokerMachine' {
+        $maintenance = Import-CpwMaintenance -Path $samplePath
+        $plan = Get-CpwPlan -Maintenance $maintenance -Provider (New-CpwCitrixProvider -AdminAddress 'ddc01.corp.example.test')
+        $plan.machines.name | Sort-Object | Should -Be @('LISW11ENG001', 'LISW11FIN001')
         $plan.exclusions[0].reason | Should -Be 'Streamed by PVS: update the vDisk instead.'
         $plan.simulation | Should -BeFalse
         Should -Invoke -ModuleName CitrixPatchWaves Get-BrokerMachine -ParameterFilter { $AdminAddress -eq 'ddc01.corp.example.test' }
     }
 
     It 'does nothing without -Execute' {
-        { Invoke-CpwMaintenance -Maintenance $maintenance -Provider $provider } | Should -Throw 'Nothing was changed*'
+        $maintenance = Import-CpwMaintenance -InputObject (Get-RestartDefinition)
+        { Invoke-CpwMaintenance -Maintenance $maintenance -Provider (Get-TestCitrixProvider) } | Should -Throw 'Nothing was changed*'
     }
 
-    It 'does not change a real site in this version' {
-        # A window that has already started, so the engine reaches the first action.
-        $definition = Get-TestDefinition
-        $definition.window.start = [DateTimeOffset]::UtcNow.AddHours(-1).ToString('o')
-        $definition.window.end = [DateTimeOffset]::UtcNow.AddHours(5).ToString('o')
-        $open = Import-CpwMaintenance -InputObject $definition
-        { Invoke-CpwMaintenance -Maintenance $open -Provider $provider -Execute } | Should -Throw '*does not change it*'
+    It 'refuses a change that installs updates before touching a machine' {
+        $maintenance = Import-CpwMaintenance -Path $samplePath
+        { Invoke-CpwMaintenance -Maintenance $maintenance -Provider (Get-TestCitrixProvider) -Execute } | Should -Throw '*cannot install updates in this version*'
+        Should -Invoke -ModuleName CitrixPatchWaves Set-BrokerMachineMaintenanceMode -Times 0 -Exactly
+    }
+
+    It 'runs a restart-only change through the Broker SDK and WinRM' {
+        $maintenance = Import-CpwMaintenance -InputObject (Get-RestartDefinition)
+        $run = Invoke-CpwMaintenance -Maintenance $maintenance -Provider (Get-TestCitrixProvider) -Execute
+        $run.outcome | Should -Be 'Completed'
+        $run.simulation | Should -BeFalse
+        $run.totals.completed | Should -Be 2
+        $run.totals.leftInMaintenance | Should -Be 0
+        $script:site['CORP\LISW11FIN001'].Maintenance | Should -BeFalse
+        $script:site['CORP\LISW11ENG001'].Maintenance | Should -BeFalse
+        (Get-Machine $run 'LISW11FIN001').forcedLogoff | Should -BeTrue
+
+        Should -Invoke -ModuleName CitrixPatchWaves Set-BrokerMachineMaintenanceMode -Times 4 -Exactly
+        Should -Invoke -ModuleName CitrixPatchWaves Send-BrokerSessionMessage -Times 1 -Exactly -ParameterFilter { $Title -eq 'Planned maintenance' -and $MessageStyle -eq 'Information' }
+        Should -Invoke -ModuleName CitrixPatchWaves Stop-BrokerSession -Times 1 -Exactly
+        Should -Invoke -ModuleName CitrixPatchWaves New-BrokerHostingPowerAction -Times 1 -Exactly -ParameterFilter { $MachineName -eq 'CORP\LISW11FIN001' -and $Action -eq 'Restart' }
+        Should -Invoke -ModuleName CitrixPatchWaves Invoke-Command -Times 1 -Exactly -ParameterFilter { $ComputerName -eq 'lisw11eng001.corp.example.test' -and $ScriptBlock.ToString() -match 'shutdown\.exe' }
+        Should -Invoke -ModuleName CitrixPatchWaves Invoke-Command -Times 2 -Exactly -ParameterFilter { $ScriptBlock.ToString() -match 'Get-Service' }
+    }
+
+    It 'does not count a machine as back until it was seen unregistered after the restart' {
+        $provider = Get-TestCitrixProvider
+        & $provider.GetMachines $provider.State | Out-Null
+        & $provider.StartRestart $provider.State 'LISW11FIN001'
+        # The controller has not noticed the restart yet.
+        $script:site['CORP\LISW11FIN001'].Polls = 1
+        & $provider.GetRegistration $provider.State 'LISW11FIN001' | Should -Be 'Restarting'
+        $script:site['CORP\LISW11FIN001'].Polls = 0
+        & $provider.GetRegistration $provider.State 'LISW11FIN001' | Should -Be 'Unregistered'
+        & $provider.GetRegistration $provider.State 'LISW11FIN001' | Should -Be 'Registered'
+    }
+
+    It 'reports a service that is stopped or not installed' {
+        Mock -ModuleName CitrixPatchWaves Invoke-Command {
+            [pscustomobject]@{ Name = 'BrokerAgent'; Status = 'Stopped' }
+            [pscustomobject]@{ Name = 'Spooler'; Status = 'NotInstalled' }
+        } -ParameterFilter { $ScriptBlock.ToString() -match 'Get-Service' }
+        $provider = Get-TestCitrixProvider
+        & $provider.GetMachines $provider.State | Out-Null
+        $status = & $provider.GetServiceStatus $provider.State 'LISW11ENG001' @('BrokerAgent', 'Spooler')
+        $status['BrokerAgent'] | Should -Be 'Stopped'
+        $status['Spooler'] | Should -Be 'NotInstalled'
+    }
+
+    It 'fails a machine whose restart is refused and keeps it in maintenance mode' {
+        Mock -ModuleName CitrixPatchWaves New-BrokerHostingPowerAction { throw 'The hosting connection is in maintenance mode.' }
+        $maintenance = Import-CpwMaintenance -InputObject (Get-RestartDefinition)
+        $run = Invoke-CpwMaintenance -Maintenance $maintenance -Provider (Get-TestCitrixProvider) -Execute
+        $machine = Get-Machine $run 'LISW11FIN001'
+        $machine.state | Should -Be 'Failed'
+        $machine.detail | Should -BeLike '*The hosting connection is in maintenance mode.'
+        $script:site['CORP\LISW11FIN001'].Maintenance | Should -BeTrue
+        $run.outcome | Should -Be 'Stopped'
+        (Get-Machine $run 'LISW11ENG001').state | Should -Be 'NotStarted'
+    }
+
+    It 'refuses an action on a machine it did not plan' {
+        $provider = Get-TestCitrixProvider
+        { & $provider.SetMaintenance $provider.State 'LISW11XYZ001' $true } | Should -Throw '*was not read from the site*'
     }
 }
 
@@ -352,6 +508,16 @@ Describe 'Invoke-PatchWaves.ps1' {
         Test-Path (Join-Path $output 'journal.jsonl') | Should -BeTrue
     }
 
+    It 'runs the weekly restart sample in the simulation' {
+        $output = Join-Path $TestDrive 'weekly-restart'
+        $sample = Join-Path $repositoryRoot 'samples/lisbon-weekly-restart.maintenance.json'
+        $summary = & (Join-Path $repositoryRoot 'scripts/Invoke-PatchWaves.ps1') -Simulation -MaintenancePath $sample -OutputDirectory $output
+        $summary.Patched + $summary.NotDrained | Should -Be 12
+        $summary.Failed | Should -Be 0
+        $run = Get-Content (Join-Path $output 'run.json') -Raw | ConvertFrom-Json
+        @($run.events | Where-Object step -EQ 'PatchStarted') | Should -HaveCount 0
+    }
+
     It 'writes only a plan with -PlanOnly' {
         $output = Join-Path $TestDrive 'plan'
         $waves = & (Join-Path $repositoryRoot 'scripts/Invoke-PatchWaves.ps1') -Simulation -PlanOnly -OutputDirectory $output 3>$null 6>$null
@@ -359,8 +525,8 @@ Describe 'Invoke-PatchWaves.ps1' {
         (Get-ChildItem $output).Name | Should -Be @('plan.json')
     }
 
-    It 'refuses to change a real site' {
-        { & (Join-Path $repositoryRoot 'scripts/Invoke-PatchWaves.ps1') -AdminAddress 'ddc01' -OutputDirectory (Join-Path $TestDrive 'site') } | Should -Throw '*Add -PlanOnly*'
+    It 'asks for -PlanOnly or -Execute against a real site' {
+        { & (Join-Path $repositoryRoot 'scripts/Invoke-PatchWaves.ps1') -AdminAddress 'ddc01' -OutputDirectory (Join-Path $TestDrive 'site') } | Should -Throw '*add -PlanOnly to review the plan or -Execute*'
     }
 }
 

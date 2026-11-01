@@ -3,7 +3,7 @@
 A change has four steps, each a public function of the `CitrixPatchWaves`
 module. Every step takes a provider: the deterministic simulation
 (`New-CpwSimulationProvider`) or the Citrix site (`New-CpwCitrixProvider`,
-read-only in this version). The engine never calls Citrix or Windows directly;
+which restarts but does not install updates in this version). The engine never calls Citrix or Windows directly;
 it only calls the provider, which is what keeps the logic testable without a
 site.
 

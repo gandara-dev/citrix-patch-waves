@@ -159,9 +159,7 @@ function Test-CpwMaintenance {
                 $seen[$wingetId.ToLowerInvariant()] = $true
             }
         }
-        if ($updatesEnabled -eq $false -and $software.Count -eq 0) {
-            & $add 'patch' 'Enable Windows updates or list at least one application; otherwise there is nothing to patch.'
-        }
+        # Windows Update off and no application is a valid restart-only change.
 
         # ------------------------------------------------------------ reboot and verify
         $reboot = Get-CpwValue $InputObject 'reboot'
