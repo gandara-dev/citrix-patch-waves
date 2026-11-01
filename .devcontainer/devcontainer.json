@@ -2,7 +2,7 @@
   "name": "Citrix Patch Waves",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
   "features": {
-    "ghcr.io/devcontainers/features/powershell:1": {}
+    "ghcr.io/devcontainers/features/powershell:2": {}
   },
   "forwardPorts": [8768],
   "portsAttributes": {
